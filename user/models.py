@@ -92,3 +92,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         timestamp = int(token_parts[-1]) if token_parts[-1].isdigit() else 0
         expiration_time = timezone.now() - expiration_duration
         return timestamp < expiration_time.timestamp()
+
+    def generate_password_reset_token(self):
+        self.password_reset_token = secrets.token_urlsafe(32)  # Generate a random token
+        self.save()
+
+    def send_password_reset_email(user):
+        subject = 'Password Reset Request'
+        reset_url = settings.BASE_URL + f'/password-reset/{user.password_reset_token}/'  # Replace BASE_URL with your base URL
+        message = render_to_string('password_reset_email_template.html', {'reset_url': reset_url})
+        plain_message = strip_tags(message)
+        from_email = settings.EMAIL_HOST_USER  # Your sender email
+        to = user.email
+
+        send_mail(subject, plain_message, from_email, [to], html_message=message)
