@@ -7,10 +7,6 @@ from food.models import Food
 from restaurant.models import Restaurant
 
 
-# from address.models import Address
-# from food.models import Food
-# from order.models import Order
-# from restaurant.models import Restaurant
 
 
 class CustomUserManager(BaseUserManager):
