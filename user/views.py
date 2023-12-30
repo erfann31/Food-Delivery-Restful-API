@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 
 from .forms import UserRegistrationForm
 from .models import CustomUser
@@ -24,12 +24,20 @@ def register_user(request):
     return render(request, 'registration.html', {'form': form})
 
 
-def email_verification(request, token):
-    # Implement your logic to verify the user's email using the token
+def delete_user(request):
+    CustomUser.objects.all().delete()
+    return HttpResponse("Data deleted successfully")
+
+
+def email_verification_view(request, token):
     try:
         user = CustomUser.objects.get(verification_token=token)
-        user.verified = True
-        user.save()
-        return HttpResponse("Email verified successfully!")  # You can render a template or redirect as needed
+        if not user.verified:  # Check if the user is not already verified
+            user.verified = True
+            user.save()
+            # You can perform additional actions upon successful verification, e.g., log in the user
+            return HttpResponse("Email verified successfully. You can now log in.")  # Placeholder response
+        else:
+            return HttpResponse("Email already verified.")  # Placeholder response
     except CustomUser.DoesNotExist:
-        return HttpResponse("Invalid verification token")
+        return HttpResponse("Invalid verification token.")
