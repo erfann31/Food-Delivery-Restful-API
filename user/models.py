@@ -2,7 +2,11 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-
+from django.core.mail import send_mail
+from django.conf import settings
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.urls import reverse
 from food.models import Food
 from restaurant.models import Restaurant
 
@@ -54,3 +58,26 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = _('User')
         verbose_name_plural = _('Users')
+
+    def send_verification_email(self):
+        if not self.verification_token:
+            # Generate or set the verification token if it doesn't exist
+            # Example: You can generate a token using libraries like `secrets` or `uuid`
+            self.verification_token = 'generated_token_here'
+            self.save()
+
+        token = self.verification_token
+        subject = 'Verify your email'
+        verification_url = self.get_verification_url()  # Define this method below
+        message = render_to_string('verification_email_template.html', {'verification_url': verification_url})
+        plain_message = strip_tags(message)
+        from_email = settings.EMAIL_HOST_USER
+        to = self.email
+
+        send_mail(subject, plain_message, from_email, [to], html_message=message)
+
+    def get_verification_url(self):
+        # Define the URL where users can verify their email
+        # Example: You may need to create a view and URL pattern for email verification
+        # Replace 'email-verification' with your actual URL name for email verification
+        return settings.BASE_URL + reverse('email-verification', kwargs={'token': self.verification_token})

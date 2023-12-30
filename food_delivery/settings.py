@@ -1,13 +1,25 @@
+import os
 from pathlib import Path
+from dotenv import load_dotenv
 
+load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-9mjjegg273v&521-0cr&kk=h2#q#hqe5u^ma__z#h(ltyw*4s)'
-
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 AUTH_USER_MODEL = 'user.CustomUser'
+
+EMAIL_BACKEND =  os.getenv('EMAIL_BACKEND')
+EMAIL_HOST =  os.getenv('EMAIL_HOST')
+EMAIL_PORT =  os.getenv('EMAIL_PORT')
+EMAIL_HOST_USER =  os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD =  os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS',)
+EMAIL_SUBJECT_PREFIX = os.getenv('EMAIL_SUBJECT_PREFIX', default='[Your App Name]')
+DEFAULT_FROM_EMAIL =  os.getenv('DEFAULT_FROM_EMAIL')
+BASE_URL = 'http://127.0.0.1/'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
