@@ -50,7 +50,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(_('Active'), default=True)
     is_staff = models.BooleanField(_('Staff status'), default=False)
     date_joined = models.DateTimeField(_('Date joined'), default=timezone.now)
-
+    password_reset_token_created_at = models.DateTimeField(null=True, blank=True)
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
@@ -79,30 +79,38 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         send_mail(subject, plain_message, from_email, [to], html_message=message)
 
     def generate_verification_token(self):
-        random_string = secrets.token_urlsafe(16)  # Random string
-        timestamp = str(int(timezone.now().timestamp()))  # Current timestamp (converted to string)
+        random_string = secrets.token_urlsafe(16)
+        timestamp = str(int(timezone.now().timestamp()))
         return f'{random_string}_{timestamp}'
 
     def get_verification_url(self):
         return settings.BASE_URL + reverse('email-verification', kwargs={'token': self.verification_token})
 
-    def token_expired(self):
-        expiration_duration = timedelta(minutes=2)  # Set the expiration duration (24 hours in this example)
+    def verification_token_expired(self):
+        expiration_duration = timedelta(minutes=2)
         token_parts = self.verification_token.split('_')
         timestamp = int(token_parts[-1]) if token_parts[-1].isdigit() else 0
         expiration_time = timezone.now() - expiration_duration
         return timestamp < expiration_time.timestamp()
 
     def generate_password_reset_token(self):
-        self.password_reset_token = secrets.token_urlsafe(32)  # Generate a random token
+        self.password_reset_token = secrets.token_urlsafe(32)
+        self.password_reset_token_created_at = timezone.now()
         self.save()
+
+    def password_reset_token_expired(self):
+        expiration_duration = timedelta(minutes=2)
+        if not self.password_reset_token_created_at:
+            return True
+        expiration_time = self.password_reset_token_created_at + expiration_duration
+        return expiration_time <= timezone.now()
 
     def send_password_reset_email(user):
         subject = 'Password Reset Request'
-        reset_url = settings.BASE_URL + f'/password-reset/{user.password_reset_token}/'  # Replace BASE_URL with your base URL
+        reset_url = settings.BASE_URL + f'/password-reset/{user.password_reset_token}/'
         message = render_to_string('password_reset_email_template.html', {'reset_url': reset_url})
         plain_message = strip_tags(message)
-        from_email = settings.EMAIL_HOST_USER  # Your sender email
+        from_email = settings.EMAIL_HOST_USER
         to = user.email
 
         send_mail(subject, plain_message, from_email, [to], html_message=message)
