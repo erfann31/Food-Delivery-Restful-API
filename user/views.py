@@ -32,12 +32,14 @@ def delete_user(request):
 def email_verification_view(request, token):
     try:
         user = CustomUser.objects.get(verification_token=token)
-        if not user.verified:  # Check if the user is not already verified
-            user.verified = True
-            user.save()
-            # You can perform additional actions upon successful verification, e.g., log in the user
-            return HttpResponse("Email verified successfully. You can now log in.")  # Placeholder response
+        if not user.verified:
+            if not user.token_expired():  # Check if the token is not expired
+                user.verified = True
+                user.save()
+                return HttpResponse("Email verified successfully")
+            else:
+                return HttpResponse("The verification link has expired.")  # Handle expired token
         else:
-            return HttpResponse("Email already verified.")  # Placeholder response
+            return HttpResponse("Email already verified.")
     except CustomUser.DoesNotExist:
         return HttpResponse("Invalid verification token.")

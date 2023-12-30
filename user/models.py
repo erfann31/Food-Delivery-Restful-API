@@ -1,4 +1,5 @@
 import secrets
+from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
@@ -62,11 +63,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def send_verification_email(self):
         if not self.verification_token:
-            self.verification_token = secrets.token_urlsafe(32)  # Generate a random URL-safe token of length 32
+            self.verification_token = self.generate_verification_token()
             self.save()
 
         subject = 'Verify your email'
-        verification_url = self.get_verification_url()  # Define this method below
+        verification_url = self.get_verification_url()
         message = render_to_string('verification_email_template.html', {
             'user_name': self.name,
             'verification_url': verification_url
@@ -77,8 +78,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
         send_mail(subject, plain_message, from_email, [to], html_message=message)
 
-    def get_verification_url(self):
-        return settings.BASE_URL + reverse('email-verification', kwargs={'token': self.verification_token})
+    def generate_verification_token(self):
+        random_string = secrets.token_urlsafe(16)  # Random string
+        timestamp = str(int(timezone.now().timestamp()))  # Current timestamp (converted to string)
+        return f'{random_string}_{timestamp}'
 
     def get_verification_url(self):
         return settings.BASE_URL + reverse('email-verification', kwargs={'token': self.verification_token})
+
+    def token_expired(self):
+        expiration_duration = timedelta(minutes=2)  # Set the expiration duration (24 hours in this example)
+        token_parts = self.verification_token.split('_')
+        timestamp = int(token_parts[-1]) if token_parts[-1].isdigit() else 0
+        expiration_time = timezone.now() - expiration_duration
+        return timestamp < expiration_time.timestamp()
