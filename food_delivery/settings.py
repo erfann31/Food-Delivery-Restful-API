@@ -7,6 +7,7 @@ SECRET_KEY = 'django-insecure-9mjjegg273v&521-0cr&kk=h2#q#hqe5u^ma__z#h(ltyw*4s)
 DEBUG = True
 
 ALLOWED_HOSTS = []
+AUTH_USER_MODEL = 'user.CustomUser'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -15,6 +16,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'user',
+    'address',
+    'food',
+    'restaurant',
+
 ]
 
 MIDDLEWARE = [
