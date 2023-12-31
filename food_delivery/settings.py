@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'address',
     'food',
     'restaurant',
+    'order',
 
 ]
 
