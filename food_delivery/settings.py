@@ -29,6 +29,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'drf_yasg',
+    'rest_framework',
+
     'user',
     'address',
     'food',
@@ -36,6 +40,17 @@ INSTALLED_APPS = [
     'order',
 
 ]
+
+# SWAGGER_SETTINGS = {
+#     'SECURITY_DEFINITIONS': {
+#         'Token': {
+#             'type': 'apiKey',
+#             'name': 'Authorization',
+#             'in': 'header'
+#         }
+#     },
+#     'USE_SESSION_AUTH': False,  # Set this to False if you are using TokenAuthentication
+# }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

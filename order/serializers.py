@@ -7,7 +7,6 @@ from .models import Order, OrderItem
 
 
 class OrderItemsSerializer(serializers.ModelSerializer):
-
     food = FoodSerializer()
     class Meta:
         model = OrderItem
