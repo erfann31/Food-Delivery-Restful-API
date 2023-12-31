@@ -1,6 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
+from rest_framework.viewsets import ModelViewSet
+
 from .models import Address
 from .serializers import AddressSerializer
 from user.models import CustomUser
@@ -45,3 +47,7 @@ def get_user_addresses(request, user_id):
         return Response(serializer.data , status=status.HTTP_200_OK)
     except CustomUser.DoesNotExist:
         return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+class AddressViewSet(ModelViewSet):
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
