@@ -1,16 +1,10 @@
+import random
+
 from django.db import models
 
 from address.models import Address
+from orderItem.models import OrderItem
 from user.models import CustomUser
-
-
-class OrderItem(models.Model):
-    food = models.ForeignKey('Food', on_delete=models.CASCADE)
-    order = models.ForeignKey('Order', on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-
-    def __str__(self):
-        return f"{self.food.name} - Quantity: {self.quantity}"
 
 
 class Order(models.Model):
@@ -25,6 +19,10 @@ class Order(models.Model):
     estimated_arrival = models.IntegerField(choices=ESTIMATED_ARRIVAL_CHOICES)
     is_canceled = models.BooleanField(default=False)
 
+    def save(self, *args, **kwargs):
+        if not self.estimated_arrival:
+            self.estimated_arrival = random.choice([i for i, _ in self.ESTIMATED_ARRIVAL_CHOICES])
+        super(Order, self).save(*args, **kwargs)
+
     def __str__(self):
         return f"Order ID: {self.pk} - Status: {self.status}"
-
