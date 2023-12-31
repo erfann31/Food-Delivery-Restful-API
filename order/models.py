@@ -17,10 +17,17 @@ class OrderItem(models.Model):
 
 class Order(models.Model):
     ESTIMATED_ARRIVAL_CHOICES = [(i, f'{i} minutes') for i in range(20, 91)]
+    ONGOING = 'Ongoing'
+    COMPLETED = 'Completed'
+    STATUS_CHOICES = [
+        (ONGOING, 'Ongoing'),
+        (COMPLETED, 'Completed'),
+    ]
+
     user = models.ForeignKey(CustomUser, related_name='orders', on_delete=models.CASCADE)
     orderItems = models.ManyToManyField(OrderItem, related_name='OrderItems')
     total_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    status = models.CharField(max_length=20, choices=(('Ongoing', 'Ongoing'), ('Completed', 'Completed')))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=ONGOING)
     date_and_time = models.DateTimeField(auto_now_add=True)
     delivery_address = models.ForeignKey(Address, related_name='orders', on_delete=models.CASCADE)
     discount_code = models.CharField(max_length=50, blank=True)
