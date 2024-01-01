@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from address.models import Address
 from address.serializers import AddressSerializer
+from discount_code.serializers import DiscountCodeSerializer
 from food.models import Food
 from .models import Order, OrderItem
 
@@ -17,10 +18,11 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     delivery_address = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all())
     orderItems = OrderItemSerializer(many=True, required=True, source='orderitem_set')
+    discount_code = DiscountCodeSerializer()
 
     class Meta:
         model = Order
-        fields = ['id', 'total_price', 'status', 'date_and_time', 'delivery_address', 'discount_code', 'estimated_arrival', 'is_canceled', 'orderItems']
+        fields = ['id', 'total_price', 'discount_code', 'status', 'date_and_time', 'delivery_address', 'estimated_arrival', 'is_canceled', 'orderItems']
         read_only_fields = ['id', 'date_and_time', 'orderItems', 'estimated_arrival']
 
     def create(self, validated_data):
@@ -34,5 +36,5 @@ class OrderSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['delivery_address'] = AddressSerializer(instance.delivery_address).data
         representation['orderItems'] = OrderItemSerializer(instance.orderitem_set.all(), many=True).data
-        representation['discount_code'] = instance.discount_code if instance.discount_code else None
+        # representation['discount_code'] = instance.discount_code if instance.discount_code else None
         return representation
