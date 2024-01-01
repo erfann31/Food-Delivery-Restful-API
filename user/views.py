@@ -1,4 +1,3 @@
-from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework import status
@@ -18,20 +17,19 @@ def delete_user(request):
     return HttpResponse("Data deleted successfully")
 
 
+@api_view(['POST'])
 def register_user(request):
     if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
+        form = UserRegistrationForm(request.data)
         if form.is_valid():
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
             user.save()
-            messages.success(request, 'User created successfully. Please check your email for verification.')
             user.send_verification_email()
-            return HttpResponse("Email verified successfully sent!")
-    else:
-        form = UserRegistrationForm()
-
-    return render(request, 'registration.html', {'form': form})
+            serialized_user = CustomUserSerializer(user)
+            return Response(serialized_user.data, status=status.HTTP_201_CREATED)
+        return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'message': 'Invalid method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 def email_verification_view(request, token):
@@ -50,17 +48,18 @@ def email_verification_view(request, token):
         return HttpResponse("Invalid verification token.")
 
 
+@api_view(['POST'])
 def password_reset_request(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
+        email = request.data.get('email')
         user = CustomUser.objects.filter(email=email).first()
         if user:
             user.generate_password_reset_token()
             user.send_password_reset_email()
-            return HttpResponse("Password reset link sent to your email.")
+            return Response({'message': "Password reset link sent to your email."}, status=status.HTTP_200_OK)
         else:
-            return HttpResponse("User not found.")
-    return render(request, 'password_reset_request.html')
+            return Response({'message': "User not found."}, status=status.HTTP_404_NOT_FOUND)
+    return Response({'message': 'Invalid method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 def password_reset_confirm(request, token):
@@ -79,9 +78,9 @@ def password_reset_confirm(request, token):
 
 @api_view(['POST'])
 def add_to_favorites(request):
-    user_id = request.data.get('user_id')  # Assuming user_id is provided in the request data
-    restaurant_ids = request.data.get('restaurant_ids', [])  # List of restaurant IDs
-    food_ids = request.data.get('food_ids', [])  # List of food IDs
+    user_id = request.data.get('user_id')
+    restaurant_ids = request.data.get('restaurant_ids', [])
+    food_ids = request.data.get('food_ids', [])
 
     try:
         user = CustomUser.objects.get(pk=user_id)
@@ -124,6 +123,7 @@ def update_profile(request, user_id):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except CustomUser.DoesNotExist:
         return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
 
 class CustomUserViewSet(ModelViewSet):
     queryset = CustomUser.objects.all()
