@@ -11,7 +11,9 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from food.models import Food
+from food.serializers import FoodSerializer
 from restaurant.models import Restaurant
+from restaurant.serializers import RestaurantSerializer
 from .forms import UserRegistrationForm
 from .models import CustomUser
 from .serializers import CustomUserSerializer
@@ -100,38 +102,73 @@ def password_reset_confirm(request, token):
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def add_to_favorites(request):
-    user_id = request.user.id
+    user = request.user
+    if 'restaurant_ids' not in request.data or 'food_ids' not in request.data:
+        return Response({'error': 'Both restaurant_ids and food_ids are required and must be a list!'}, status=status.HTTP_400_BAD_REQUEST)
+
     restaurant_ids = request.data.get('restaurant_ids', [])
     food_ids = request.data.get('food_ids', [])
-
+    if not restaurant_ids and not food_ids:
+        return Response({'error': 'At least one restaurant_id or food_id is required'}, status=status.HTTP_400_BAD_REQUEST)
     try:
-        user = CustomUser.objects.get(pk=user_id)
-
-        # Add specified restaurants to user's favorites
+        user = CustomUser.objects.get(pk=user.id)
         for restaurant_id in restaurant_ids:
-            restaurant = Restaurant.objects.get(pk=restaurant_id)
-            user.favorite_restaurants.add(restaurant)
+            try:
+                restaurant = Restaurant.objects.get(pk=restaurant_id)
+                user.favorite_restaurants.add(restaurant)
+            except Restaurant.DoesNotExist:
+                return Response({'message': f'Restaurant with ID {restaurant_id} not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Add specified foods to user's favorites
         for food_id in food_ids:
-            food = Food.objects.get(pk=food_id)
-            user.favorite_foods.add(food)
+            try:
+                food = Food.objects.get(pk=food_id)
+                user.favorite_foods.add(food)
+            except Food.DoesNotExist:
+                return Response({'message': f'Food with ID {food_id} not found'}, status=status.HTTP_404_NOT_FOUND)
 
         return Response({'message': 'Added to favorites successfully'}, status=status.HTTP_200_OK)
     except CustomUser.DoesNotExist:
         return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-    except Restaurant.DoesNotExist:
-        return Response({'message': 'Restaurant not found'}, status=status.HTTP_404_NOT_FOUND)
-    except Food.DoesNotExist:
-        return Response({'message': 'Food not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def remove_from_favorites(request):
+    user = request.user
+    restaurant_ids = request.data.get('restaurant_ids', [])
+    food_ids = request.data.get('food_ids', [])
+
+    if not restaurant_ids and not food_ids:
+        return Response({'error': 'At least one restaurant_id or food_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user = CustomUser.objects.get(pk=user.id)
+
+        for restaurant_id in restaurant_ids:
+            try:
+                restaurant = Restaurant.objects.get(pk=restaurant_id)
+                user.favorite_restaurants.remove(restaurant)
+            except Restaurant.DoesNotExist:
+                return Response({'message': f'Restaurant with ID {restaurant_id} not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        for food_id in food_ids:
+            try:
+                food = Food.objects.get(pk=food_id)
+                user.favorite_foods.remove(food)
+            except Food.DoesNotExist:
+                return Response({'message': f'Food with ID {food_id} not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({'message': 'Removed from favorites successfully'}, status=status.HTTP_200_OK)
+    except CustomUser.DoesNotExist:
+        return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['PATCH'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
-def update_profile(request, user_id):
-    if request.user.id != user_id:
-        return Response({'message': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
+def update_profile(request):
+    user_id = request.user.id  # Retrieve user ID from the authenticated request
 
     try:
         user = CustomUser.objects.get(pk=user_id)
@@ -148,6 +185,28 @@ def update_profile(request, user_id):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except CustomUser.DoesNotExist:
+        return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def get_user_favorites(request):
+    user = request.user
+
+    try:
+        custom_user = CustomUser.objects.get(pk=user.id)
+        favorite_restaurants = custom_user.favorite_restaurants.all()
+        favorite_foods = custom_user.favorite_foods.all()
+
+        restaurant_serializer = RestaurantSerializer(favorite_restaurants, many=True)
+        food_serializer = FoodSerializer(favorite_foods, many=True)
+
+        return Response({
+            'favorite_restaurants': restaurant_serializer.data,
+            'favorite_foods': food_serializer.data
+        }, status=status.HTTP_200_OK)
     except CustomUser.DoesNotExist:
         return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
