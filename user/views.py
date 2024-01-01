@@ -1,9 +1,14 @@
+from django.contrib.auth import authenticate
 from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from food.models import Food
 from restaurant.models import Restaurant
@@ -12,9 +17,24 @@ from .models import CustomUser
 from .serializers import CustomUserSerializer
 
 
-def delete_user(request):
-    CustomUser.objects.all().delete()
-    return HttpResponse("Data deleted successfully")
+class TokenObtainPairView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        # Authenticate user based on provided credentials
+        user = authenticate(username=username, password=password)
+
+        if user:
+            # Generate token for the authenticated user
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+            return Response({'access_token': access_token})
+        else:
+            return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 @api_view(['POST'])
@@ -77,8 +97,10 @@ def password_reset_confirm(request, token):
 
 
 @api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
 def add_to_favorites(request):
-    user_id = request.data.get('user_id')
+    user_id = request.user.id
     restaurant_ids = request.data.get('restaurant_ids', [])
     food_ids = request.data.get('food_ids', [])
 
@@ -105,7 +127,12 @@ def add_to_favorites(request):
 
 
 @api_view(['PATCH'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
 def update_profile(request, user_id):
+    if request.user.id != user_id:
+        return Response({'message': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
+
     try:
         user = CustomUser.objects.get(pk=user_id)
         updated_data = {}
