@@ -179,3 +179,4 @@ cython_debug/
 /order/migrations/
 /food/migrations/
 /address/migrations/
+/discount_code/migrations/

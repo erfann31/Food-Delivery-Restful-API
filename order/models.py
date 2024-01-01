@@ -3,6 +3,7 @@ import random
 from django.db import models
 
 from address.models import Address
+from discount_code.models import DiscountCode
 from food.models import Food
 from user.models import CustomUser
 
@@ -30,7 +31,7 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=ONGOING)
     date_and_time = models.DateTimeField(auto_now_add=True)
     delivery_address = models.ForeignKey(Address, related_name='orders', on_delete=models.CASCADE)
-    discount_code = models.CharField(max_length=50, blank=True)
+    discount_code = models.ForeignKey(DiscountCode, on_delete=models.SET_NULL, null=True, blank=True)
     estimated_arrival = models.IntegerField(choices=ESTIMATED_ARRIVAL_CHOICES)
     is_canceled = models.BooleanField(default=False)
 

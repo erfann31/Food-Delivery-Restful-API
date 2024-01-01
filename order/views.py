@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from discount_code.models import DiscountCode
 from .models import Order, OrderItem
 from .serializers import OrderSerializer, OrderItemsSerializer
 
@@ -36,17 +37,23 @@ def update_order_status(request, order_id):
 def add_discount_code(request, order_id):
     try:
         order = Order.objects.get(pk=order_id)
-        discount_code = request.data.get('discount_code')
-        order.discount_code = discount_code
-        order.save()
-
-        return Response({'message': 'Discount code applied to the order'}, status=status.HTTP_200_OK)
+        discount_code_text = request.data.get('discount_code')
+        try:
+            discount_code = DiscountCode.objects.get(code_text=discount_code_text, is_active=True)
+            order.total_price -= (order.total_price * (discount_code.discount_percent / 100))
+            order.discount_code = discount_code
+            order.save()
+            return Response({'message': 'Discount code applied to the order'}, status=status.HTTP_200_OK)
+        except DiscountCode.DoesNotExist:
+            return Response({'message': 'Invalid or inactive discount code'}, status=status.HTTP_400_BAD_REQUEST)
     except Order.DoesNotExist:
         return Response({'message': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
+
 
 class OrderViewSet(ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
 
 class OrderItemViewSet(ModelViewSet):
     queryset = OrderItem.objects.all()

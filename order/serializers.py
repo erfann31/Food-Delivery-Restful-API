@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from address.serializers import AddressSerializer
+from discount_code.serializers import DiscountCodeSerializer
 from food.serializers import FoodSerializer
 from user.serializers import CustomUserSerializer
 from .models import Order, OrderItem
@@ -18,6 +19,7 @@ class OrderSerializer(serializers.ModelSerializer):
     orderItems = OrderItemsSerializer()
     user = CustomUserSerializer()
     delivery_address = AddressSerializer()
+    discount_code = DiscountCodeSerializer()
 
     class Meta:
         model = Order
