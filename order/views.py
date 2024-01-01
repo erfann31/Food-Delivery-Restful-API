@@ -1,17 +1,35 @@
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from discount_code.models import DiscountCode
 from .models import Order, OrderItem
-from .serializers import OrderSerializer, OrderItemsSerializer
+from .serializers import OrderSerializer, OrderItemSerializer
+
+
+@api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])  # Import IsAuthenticated from rest_framework.permissions
+def create_order(request):
+    serializer = OrderSerializer(data=request.data, context={'request': request})
+
+    if serializer.is_valid():
+        serializer.save(user=request.user)  # Assuming you want to set the order user as the authenticated user
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
-def get_user_orders(request, user_id):
-    completed_orders = Order.objects.filter(user=user_id, status='Completed')
-    ongoing_orders = Order.objects.filter(user=user_id, status='Ongoing')
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def get_user_orders(request):
+    user = request.user
+
+    completed_orders = Order.objects.filter(user=user, status='Completed')
+    ongoing_orders = Order.objects.filter(user=user, status='Ongoing')
 
     completed_orders_serializer = OrderSerializer(completed_orders, many=True)
     ongoing_orders_serializer = OrderSerializer(ongoing_orders, many=True)
@@ -22,10 +40,12 @@ def get_user_orders(request, user_id):
     })
 
 
-@api_view(['PATCH'])
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
 def update_order_status(request, order_id):
     try:
-        order = Order.objects.get(pk=order_id)
+        order = Order.objects.get(pk=order_id, user=request.user)
         order.status = 'Completed'
         order.save()
         return Response({'message': 'Order status updated to Completed'}, status=status.HTTP_200_OK)
@@ -34,16 +54,22 @@ def update_order_status(request, order_id):
 
 
 @api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
 def add_discount_code(request, order_id):
     try:
-        order = Order.objects.get(pk=order_id)
+        order = Order.objects.get(pk=order_id, user=request.user)
         discount_code_text = request.data.get('discount_code')
+
+        if not discount_code_text:
+            return Response({'discount_code': 'this field is required!'}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             discount_code = DiscountCode.objects.get(code_text=discount_code_text, is_active=True)
             order.total_price -= (order.total_price * (discount_code.discount_percent / 100))
             order.discount_code = discount_code
             order.save()
-            return Response({'message': 'Discount code applied to the order'}, status=status.HTTP_200_OK)
+            return Response({'total_price': order.total_price}, status=status.HTTP_200_OK)
         except DiscountCode.DoesNotExist:
             return Response({'message': 'Invalid or inactive discount code'}, status=status.HTTP_400_BAD_REQUEST)
     except Order.DoesNotExist:
@@ -57,4 +83,4 @@ class OrderViewSet(ModelViewSet):
 
 class OrderItemViewSet(ModelViewSet):
     queryset = OrderItem.objects.all()
-    serializer_class = OrderItemsSerializer
+    serializer_class = OrderItemSerializer
