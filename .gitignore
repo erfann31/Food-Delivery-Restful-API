@@ -180,3 +180,4 @@ cython_debug/
 /food/migrations/
 /address/migrations/
 /discount_code/migrations/
+/user_photos/
