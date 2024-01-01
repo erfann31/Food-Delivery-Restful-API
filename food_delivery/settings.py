@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -41,6 +42,11 @@ INSTALLED_APPS = [
     'discount_code',
 
 ]
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=36500),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=36500),
+}
 
 # SWAGGER_SETTINGS = {
 #     'SECURITY_DEFINITIONS': {
