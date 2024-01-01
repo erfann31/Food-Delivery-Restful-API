@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'food',
     'restaurant',
     'order',
+    'discount_code',
 
 ]
 
