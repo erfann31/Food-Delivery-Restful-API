@@ -4,6 +4,6 @@ from discount_code.models import DiscountCode
 from discount_code.serializers import DiscountCodeSerializer
 
 
-class AddressViewSet(ModelViewSet):
+class DiscountCodeViewSet(ModelViewSet):
     queryset = DiscountCode.objects.all()
     serializer_class = DiscountCodeSerializer
