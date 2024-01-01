@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from drf_yasg import openapi
@@ -6,13 +8,13 @@ from rest_framework import routers
 from rest_framework.authtoken import views
 
 from address import views as address_views
+from discount_code import views as discount_code_views
 from food import views as food_views
 from order import views as order_views
 from restaurant import views as restaurant
 from restaurant import views as restaurant_views
 from user import views as user_views
 from user.views import TokenObtainPairView
-from discount_code import views as discount_code_views
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -46,4 +48,4 @@ urlpatterns = [
                   path('api/v1/get_home/', restaurant.get_home, name='get_random_data'),
                   path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
                   path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-              ] + router.urls
+              ] + router.urls + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
