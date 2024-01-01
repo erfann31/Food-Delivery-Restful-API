@@ -1,11 +1,10 @@
 from rest_framework import serializers
 
-from user.serializers import CustomUserSerializer
 from .models import Address
 
 
 class AddressSerializer(serializers.ModelSerializer):
-    user = CustomUserSerializer()
+    user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Address
