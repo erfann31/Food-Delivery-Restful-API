@@ -1,14 +1,18 @@
 from django.contrib import admin
-from django.urls import include, path, re_path
+from django.urls import include, path
 from drf_yasg import openapi
-from rest_framework import routers, permissions
 from drf_yasg.views import get_schema_view
+from rest_framework import routers
+from rest_framework.authtoken import views
+
 from address import views as address_views
 from food import views as food_views
 from order import views as order_views
 from restaurant import views as restaurant
 from restaurant import views as restaurant_views
 from user import views as user_views
+from user.views import TokenObtainPairView
+from discount_code import views as discount_code_views
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -28,8 +32,12 @@ router.register(r'orders', order_views.OrderViewSet)
 router.register(r'order_items', order_views.OrderItemViewSet)
 router.register(r'restaurant', restaurant_views.RestaurantViewSet)
 router.register(r'users', user_views.CustomUserViewSet)
+router.register(r'discount_codes', discount_code_views.DiscountCodeViewSet)
 
 urlpatterns = [
+                  path('api-token-auth/', views.obtain_auth_token),
+                  path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+                  path('api-auth/', include('rest_framework.urls')),
                   path('admin/', admin.site.urls),
                   path('api/v1/users/', include('user.urls')),
                   path('api/v1/orders/', include('order.urls')),
