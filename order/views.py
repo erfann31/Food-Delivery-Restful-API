@@ -52,6 +52,18 @@ def update_order_status(request, order_id):
     except Order.DoesNotExist:
         return Response({'message': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
 
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def cancel_order(request, order_id):
+    try:
+        order = Order.objects.get(pk=order_id, user=request.user)
+        order.is_canceled = True
+        order.save()
+        return Response({'message': 'Order cancelled successfully!'}, status=status.HTTP_200_OK)
+    except Order.DoesNotExist:
+        return Response({'message': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
