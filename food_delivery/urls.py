@@ -37,6 +37,8 @@ router.register(r'users', user_views.CustomUserViewSet)
 router.register(r'discount_codes', discount_code_views.DiscountCodeViewSet)
 
 urlpatterns = [
+                  path('verify/<str:token>/', user_views.email_verification_view, name='email-verification'),
+                  path('password-reset/<str:token>/', user_views.password_reset_confirm, name='password-reset-confirm'),
                   path('api-token-auth/', views.obtain_auth_token),
                   path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
                   path('api-auth/', include('rest_framework.urls')),
