@@ -27,11 +27,10 @@ class TokenObtainPairView(APIView):
         username = request.data.get('username')
         password = request.data.get('password')
 
-        # Authenticate user based on provided credentials
         user = authenticate(username=username, password=password)
 
         if user:
-            # Generate token for the authenticated user
+            # Generate token
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
             return Response({'access_token': access_token})
@@ -168,7 +167,7 @@ def remove_from_favorites(request):
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def update_profile(request):
-    user_id = request.user.id  # Retrieve user ID from the authenticated request
+    user_id = request.user.id
 
     try:
         user = CustomUser.objects.get(pk=user_id)

@@ -89,7 +89,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def get_reset_url(self):
         return settings.BASE_URL + reverse('password-reset-confirm', kwargs={'token': self.password_reset_token})
 
-
     def verification_token_expired(self):
         expiration_duration = timedelta(minutes=2)
         token_parts = self.verification_token.split('_')

@@ -77,25 +77,24 @@ class RegisterUserViewTests(APITestCase):
             response = self.client.post(url, data, format='json')
 
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-            self.assertIn('email', response.data)  # Check if the error message for missing email is present
+            self.assertIn('email', response.data)
 
     def test_register_user_invalid_email(self):
         data = {
             'name': 'Test User',
             'email': 'invalid_email',  # Invalid email format
             'password': 'test_password',
-            # Include other required fields for registration
         }
         with patch('user.views.UserRegistrationForm') as MockUserRegistrationForm:
             mock_form_instance = MockUserRegistrationForm.return_value
             mock_form_instance.is_valid.return_value = False
-            mock_form_instance.errors = {'email': ['Enter a valid email address.']}  # Simulate invalid email error
+            mock_form_instance.errors = {'email': ['Enter a valid email address.']}
 
             url = reverse('register')
             response = self.client.post(url, data, format='json')
 
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-            self.assertIn('email', response.data)  # Check if the error message for invalid email format is present
+            self.assertIn('email', response.data)
 
     def test_email_verification_view_expired_token(self):
         expired_token = 'expired_token'
@@ -209,13 +208,11 @@ class AddToFavoritesViewTests(APITestCase):
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.assertEqual(response.data['message'], 'Added to favorites successfully')
 
-            # Check if the user's favorites are updated
             user.refresh_from_db()
             self.assertTrue(user.favorite_restaurants.filter(pk=restaurant.id).exists())
             self.assertTrue(user.favorite_foods.filter(pk=food.id).exists())
 
     def test_add_to_favorites_missing_data(self):
-        # Test case for missing data in the request
         request_data = {}  # Missing 'restaurant_ids' and 'food_ids'
 
         url = reverse('add_to_favorites')
@@ -237,7 +234,6 @@ class AddToFavoritesViewTests(APITestCase):
         self.assertEqual(response.data['error'], 'At least one restaurant_id or food_id is required')
 
     def test_add_to_favorites_invalid_restaurant_id(self):
-        # Test case for providing an invalid restaurant_id
         invalid_restaurant_id = 9999  # Non-existing restaurant_id
         request_data = {'restaurant_ids': [invalid_restaurant_id], 'food_ids': []}
 
@@ -260,7 +256,6 @@ class RemoveFromFavoritesViewTests(APITestCase):
         self.access_token = str(AccessToken.for_user(self.user))
         self.restaurant = Restaurant.objects.create(name='Test Restaurant')
         self.food = Food.objects.create(name='Test Food', restaurant=self.restaurant, price=1400, max_time_to_delivery=80, min_time_to_delivery=60)
-
 
     def test_remove_from_favorites_success(self):
         request_data = {
@@ -332,7 +327,6 @@ class UpdateProfileViewTests(APITestCase):
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.assertEqual(response.data['name'], 'Updated Name')
 
-            # Check if the user's name is updated in the database
             user = User.objects.get(email='test@example.com')
             self.assertEqual(user.name, 'Updated Name')
 
@@ -349,7 +343,6 @@ class UpdateProfileViewTests(APITestCase):
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.assertEqual(response.data['mobile_number'], '1234567890')
 
-            # Check if the user's mobile number is updated in the database
             user = User.objects.get(email='test@example.com')
             self.assertEqual(user.mobile_number, '1234567890')
 
