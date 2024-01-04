@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from user.serializers import CustomUserSerializer
 from .models import DiscountCode
 
 
