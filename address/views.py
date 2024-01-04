@@ -16,7 +16,7 @@ def create_address(request):
     user = request.user
     serializer = AddressSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
-        address = serializer.save(user=user)
+        serializer.save(user=user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -25,7 +25,7 @@ def create_address(request):
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def edit_or_delete_address(request, address_id):
-    user = request.user  # Access the user associated with the token
+    user = request.user
 
     try:
         address = Address.objects.get(pk=address_id, user=user)
@@ -48,7 +48,7 @@ def edit_or_delete_address(request, address_id):
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def get_user_addresses(request):
-    user = request.user  # This retrieves the user associated with the token
+    user = request.user
 
     addresses = Address.objects.filter(user=user)
     serializer = AddressSerializer(addresses, many=True)
