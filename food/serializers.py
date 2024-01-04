@@ -33,7 +33,6 @@ class FoodCreateSerializer(serializers.ModelSerializer):
         ]
 
 
-# Serializer for Food retrieval
 class FoodRetrieveSerializer(serializers.ModelSerializer):
     restaurant = RestaurantDetailSerializer()
 
