@@ -53,9 +53,9 @@ class CreateOrderAPITest(APITestCase):
 
         url = reverse('create_order')
         data = {
-            'delivery_address': 1,  # Assuming this is the ID of the delivery address
+            'delivery_address': 1,
             'orderItems': [
-                {'food': 1, 'quantity': 2},  # Assuming 'food' is the ID of the food item and 'quantity' is the quantity
+                {'food': 1, 'quantity': 2},
                 {'food': 2, 'quantity': 1},
             ]
         }
@@ -66,11 +66,10 @@ class CreateOrderAPITest(APITestCase):
 class UpdateOrderStatusAPITest(APITestCase):
     @patch('order.views.Order.objects.get')
     def test_update_order_status(self, mock_order_get):
-        order_id = 1  # Replace with the desired order ID for testing
+        order_id = 1
         mock_order = mock_order_get.return_value
-        mock_order.status = 'Ongoing'  # Simulate an existing order with 'Ongoing' status
+        mock_order.status = 'Ongoing'
 
-        # Simulate authenticated user
         user = User.objects.create(email='test@example.com')
         access_token = str(AccessToken.for_user(user))
         headers = {'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
@@ -85,10 +84,8 @@ class UpdateOrderStatusAPITest(APITestCase):
 
     @patch('order.views.Order.objects.get')
     def test_update_order_status_not_found(self, mock_order_get):
-        # Simulate order not found
         mock_order_get.side_effect = Order.DoesNotExist
 
-        # Simulate authenticated user
         user = User.objects.create(email='test@example.com')
         access_token = str(AccessToken.for_user(user))
         headers = {'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
@@ -97,7 +94,6 @@ class UpdateOrderStatusAPITest(APITestCase):
 
         response = self.client.get(url, **headers)
 
-        # Assert that the status code is 404 NOT FOUND
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response.data['message'], 'Order not found')
 
@@ -105,11 +101,10 @@ class UpdateOrderStatusAPITest(APITestCase):
 class CancelOrderAPITest(APITestCase):
     @patch('order.views.Order.objects.get')
     def test_cancel_order(self, mock_order_get):
-        order_id = 1  # Replace with the desired order ID for testing
+        order_id = 1
         mock_order = mock_order_get.return_value
-        mock_order.is_canceled = False  # Simulate an existing order that is not yet canceled
+        mock_order.is_canceled = False
 
-        # Simulate authenticated user
         user = User.objects.create(email='test@example.com')
         access_token = str(AccessToken.for_user(user))
         headers = {'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
@@ -118,16 +113,13 @@ class CancelOrderAPITest(APITestCase):
 
         response = self.client.get(url, **headers)
 
-        # Assert that the status code is 200 OK
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['message'], 'Order cancelled successfully!')
 
     @patch('order.views.Order.objects.get')
     def test_cancel_order_not_found(self, mock_order_get):
-        # Simulate order not found
         mock_order_get.side_effect = Order.DoesNotExist
 
-        # Simulate authenticated user
         user = User.objects.create(email='test@example.com')
         access_token = str(AccessToken.for_user(user))
         headers = {'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
@@ -136,7 +128,6 @@ class CancelOrderAPITest(APITestCase):
 
         response = self.client.get(url, **headers)
 
-        # Assert that the status code is 404 NOT FOUND
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response.data['message'], 'Order not found')
 
@@ -145,13 +136,13 @@ class AddDiscountCodeAPITest(APITestCase):
     @patch('order.views.Order.objects.get')
     @patch('order.views.DiscountCode.objects.get')
     def test_add_discount_code_success(self, mock_discount_code_get, mock_order_get):
-        order_id = 1  # Replace with the desired order ID for testing
-        discount_code_text = 'TESTCODE'  # Replace with the desired discount code for testing
+        order_id = 1
+        discount_code_text = 'TESTCODE'
 
         mock_order = mock_order_get.return_value
-        mock_order.total_price = 100  # Replace with the actual total price of the order
+        mock_order.total_price = 100
         mock_discount_code = mock_discount_code_get.return_value
-        mock_discount_code.discount_percent = 10  # Replace with the desired discount percentage
+        mock_discount_code.discount_percent = 10
 
         user = User.objects.create(email='test@example.com')
         access_token = str(AccessToken.for_user(user))
@@ -167,7 +158,7 @@ class AddDiscountCodeAPITest(APITestCase):
 
     @patch('order.views.Order.objects.get')
     def test_add_discount_code_invalid_discount_code(self, mock_order_get):
-        order_id = 1  # Replace with the desired order ID for testing
+        order_id = 1
         discount_code_text = 'INVALIDCODE'  # Replace with an invalid discount code
 
         mock_order = mock_order_get.return_value
@@ -186,11 +177,10 @@ class AddDiscountCodeAPITest(APITestCase):
 
     @patch('order.views.Order.objects.get')
     def test_add_discount_code_order_not_found(self, mock_order_get):
-        # Simulating Order.DoesNotExist exception
         mock_order_get.side_effect = Order.DoesNotExist
 
-        order_id = 1  # Replace with the desired order ID for testing
-        discount_code_text = 'TESTCODE'  # Replace with the desired discount code for testing
+        order_id = 1
+        discount_code_text = 'TESTCODE'
 
         user = User.objects.create(email='test@example.com')
         access_token = str(AccessToken.for_user(user))
@@ -207,8 +197,8 @@ class AddDiscountCodeAPITest(APITestCase):
     # Empty or missing discount code
     @patch('order.views.Order.objects.get')
     def test_add_discount_code_empty_discount_code(self, mock_order_get):
-        order_id = 1  # Replace with the desired order ID for testing
-        discount_code_text = ''  # Empty discount code
+        order_id = 1
+        discount_code_text = ''
 
         user = User.objects.create(email='test@example.com')
         access_token = str(AccessToken.for_user(user))
@@ -226,12 +216,11 @@ class AddDiscountCodeAPITest(APITestCase):
     @patch('order.views.Order.objects.get')
     @patch('order.views.DiscountCode.objects.get')
     def test_add_discount_code_inactive_or_invalid_discount_code(self, mock_discount_code_get, mock_order_get):
-        order_id = 1  # Replace with the desired order ID for testing
-        discount_code_text = 'INVALIDCODE'  # Replace with an inactive or invalid discount code
+        order_id = 1
+        discount_code_text = 'INVALIDCODE'
 
         mock_order = mock_order_get.return_value
 
-        # Simulating DiscountCode.DoesNotExist exception
         mock_discount_code_get.side_effect = DiscountCode.DoesNotExist
 
         user = User.objects.create(email='test@example.com')
@@ -246,12 +235,13 @@ class AddDiscountCodeAPITest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['message'], 'Invalid or inactive discount code')
 
+
 class OrderViewSetTests(APITestCase):
     def setUp(self):
         self.view = OrderViewSet.as_view({'get': 'list', 'post': 'create', 'patch': 'partial_update', 'delete': 'destroy'})
         self.user = User.objects.create(email='test@example.com')
         self.address = Address.objects.create(street_address='123 Test St', city='Test City', state='Test State', zipcode='12345', user=self.user)
-        self.order = Order.objects.create(user=self.user, total_price=50.0, status='Ongoing',delivery_address_id=self.address.id)
+        self.order = Order.objects.create(user=self.user, total_price=50.0, status='Ongoing', delivery_address_id=self.address.id)
 
     def test_list_orders(self):
         response = self.client.get(reverse('order-list'))
@@ -261,9 +251,8 @@ class OrderViewSetTests(APITestCase):
         response = self.client.get(reverse('order-detail', kwargs={'pk': self.order.id}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-
     def test_update_order(self):
-        data = {'status': 'Completed'}  # Update the status of the order
+        data = {'status': 'Completed'}
         response = self.client.patch(reverse('order-detail', kwargs={'pk': self.order.id}), data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -277,7 +266,7 @@ class OrderItemViewSetTests(APITestCase):
         self.view = OrderItemViewSet.as_view({'get': 'list', 'post': 'create', 'patch': 'partial_update', 'delete': 'destroy'})
         self.user = User.objects.create(email='test@example.com')
         self.address = Address.objects.create(street_address='123 Test St', city='Test City', state='Test State', zipcode='12345', user=self.user)
-        self.order = Order.objects.create(user=self.user, total_price=50.0, status='Ongoing',delivery_address_id=self.address.id)
+        self.order = Order.objects.create(user=self.user, total_price=50.0, status='Ongoing', delivery_address_id=self.address.id)
         self.food = Food.objects.create(name='Test Food', price=10.0, stars=4.0, stars_count=100, min_time_to_delivery=20, max_time_to_delivery=45, category='Burger', restaurant=Restaurant.objects.create(name='Test Restaurant'))
 
     def test_list_order_items(self):
@@ -291,7 +280,7 @@ class OrderItemViewSetTests(APITestCase):
 
     def test_update_order_item(self):
         order_item = OrderItem.objects.create(order=self.order, food=self.food, quantity=2)
-        data = {'quantity': 3}  # Update the quantity of the order item
+        data = {'quantity': 3}
         response = self.client.patch(reverse('orderitem-detail', kwargs={'pk': order_item.id}), data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

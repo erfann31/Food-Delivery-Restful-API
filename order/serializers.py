@@ -53,14 +53,15 @@ class OrderSerializer(serializers.ModelSerializer):
 
             OrderItem.objects.create(order=order, **order_item_data)
 
-        order.total_price = total_price  # Assign the total price to the order instance
-        order.save(update_fields=['total_price'])  # Save the order with the calculated total_price
+        order.total_price = total_price  # Assign
+        order.save(update_fields=['total_price'])
 
         if discount_code:
             order.discount_code = discount_code
             order.save(update_fields=['discount_code'])
 
         return order
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['delivery_address'] = AddressSerializer(instance.delivery_address).data

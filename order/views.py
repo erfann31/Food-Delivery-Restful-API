@@ -12,12 +12,12 @@ from .serializers import OrderSerializer, OrderItemSerializer
 
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
-@permission_classes([IsAuthenticated])  # Import IsAuthenticated from rest_framework.permissions
+@permission_classes([IsAuthenticated])
 def create_order(request):
     serializer = OrderSerializer(data=request.data, context={'request': request})
 
     if serializer.is_valid():
-        serializer.save(user=request.user)  # Assuming you want to set the order user as the authenticated user
+        serializer.save(user=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -51,6 +51,7 @@ def update_order_status(request, order_id):
         return Response({'message': 'Order status updated to Completed'}, status=status.HTTP_200_OK)
     except Order.DoesNotExist:
         return Response({'message': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
