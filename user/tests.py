@@ -188,7 +188,7 @@ class AddToFavoritesViewTests(APITestCase):
     def test_add_to_favorites_success(self):
         user = self.user
         restaurant = Restaurant.objects.create(name='Test Restaurant')
-        food = Food.objects.create(name='Test Food', restaurant=restaurant, price=1400)
+        food = Food.objects.create(name='Test Food', restaurant=restaurant, price=1400, max_time_to_delivery=80, min_time_to_delivery=60)
 
         request_data = {
             'restaurant_ids': [restaurant.id],
@@ -259,7 +259,8 @@ class RemoveFromFavoritesViewTests(APITestCase):
         self.user = User.objects.create(email='test@example.com')
         self.access_token = str(AccessToken.for_user(self.user))
         self.restaurant = Restaurant.objects.create(name='Test Restaurant')
-        self.food = Food.objects.create(name='Test Food', restaurant=self.restaurant, price=1400)
+        self.food = Food.objects.create(name='Test Food', restaurant=self.restaurant, price=1400, max_time_to_delivery=80, min_time_to_delivery=60)
+
 
     def test_remove_from_favorites_success(self):
         request_data = {
