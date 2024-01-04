@@ -1,12 +1,14 @@
-from rest_framework.response import Response
+import random
+
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 import food.models as FoodModel
 from food.serializers import FoodSerializer
 from .models import Restaurant
 from .serializers import RestaurantSerializer
-import random
+
 
 @api_view(['GET'])
 def get_home(request):
@@ -30,8 +32,6 @@ def get_home(request):
     })
 
 
-
-
 @api_view(['GET'])
 def get_restaurant_with_dishes(request, restaurant_id):
     try:
@@ -48,6 +48,7 @@ def get_restaurant_with_dishes(request, restaurant_id):
         })
     except Restaurant.DoesNotExist:
         return Response({'message': 'Restaurant not found'}, status=404)
+
 
 class RestaurantViewSet(ModelViewSet):
     queryset = Restaurant.objects.all()
