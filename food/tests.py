@@ -21,7 +21,7 @@ class FoodViewSetTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_food(self):
-        data = {"name": "New Food", "category": "Pizza", "price": 15.0, "restaurant_id": 1}
+        data = {"name": "New Food", "category": "Pizza", "price": 15.0, "restaurant_id": 1, "min_time_to_delivery": 74, "max_time_to_delivery": 89, }
         response = self.client.post('/foods/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
