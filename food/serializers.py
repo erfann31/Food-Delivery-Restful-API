@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
-from restaurant.models import Restaurant
+from restaurant.models.restaurant import Restaurant
 from restaurant.serializers import RestaurantDetailSerializer, RestaurantIdSerializer
-from .models import Food
+from food.models.food import Food
 
 
 class FoodSerializer(serializers.ModelSerializer):

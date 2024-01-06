@@ -1,9 +1,9 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from food.models import Food
+from food.models.food import Food
 from food.views import FoodViewSet
-from restaurant.models import Restaurant
+from restaurant.models.restaurant import Restaurant
 
 
 class FoodViewSetTests(APITestCase):

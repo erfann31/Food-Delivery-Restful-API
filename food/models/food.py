@@ -3,7 +3,7 @@ import random
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from restaurant.models import Restaurant, CATEGORY_CHOICES
+from restaurant.models.restaurant import Restaurant, CATEGORY_CHOICES
 
 
 class Food(models.Model):
