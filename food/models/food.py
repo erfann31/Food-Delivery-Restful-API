@@ -1,7 +1,8 @@
 from django.db import models
 
 from consts.constants import CATEGORY_CHOICES
-from food.utils.save_food_utility import validate_time_range, generate_random_delivery_times, generate_random_stars_count, generate_random_stars
+from food.utils.save_food_utility import  generate_random_delivery_times, generate_random_stars_count, generate_random_stars
+from food.utils.validate_time_range import validate_time_range
 from restaurant.models.restaurant import Restaurant
 
 
