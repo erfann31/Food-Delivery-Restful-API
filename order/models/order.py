@@ -3,7 +3,7 @@ from django.db import models
 from address.models.address import Address
 from consts.constants import STATUS_CHOICES, ONGOING, ESTIMATED_ARRIVAL_CHOICES
 from discount_code.models.discount_code import DiscountCode
-from order.repositories.order_repository import OrderRepository
+from order.utils.save_order_utility import generate_random_estimated_arrival
 from user.models import CustomUser
 
 
@@ -19,7 +19,7 @@ class Order(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.estimated_arrival:
-            self.estimated_arrival = OrderRepository.generate_random_estimated_arrival()
+            self.estimated_arrival = generate_random_estimated_arrival()
         super(Order, self).save(*args, **kwargs)
 
     def __str__(self):

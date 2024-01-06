@@ -1,6 +1,3 @@
-import random
-
-from consts.constants import ESTIMATED_ARRIVAL_CHOICES
 from order.models.order import Order
 
 
@@ -10,9 +7,6 @@ class OrderRepository:
         return Order.objects.create(user=user, **order_data)
 
     @staticmethod
-    def generate_random_estimated_arrival():
-        return random.choice([i for i, _ in ESTIMATED_ARRIVAL_CHOICES])
-    @staticmethod
     def get_completed_orders(user):
         return Order.objects.filter(user=user, status='Completed')
 
@@ -20,9 +14,9 @@ class OrderRepository:
     def get_ongoing_orders(user):
         return Order.objects.filter(user=user, status='Ongoing')
 
-    def update_order_status(order_id, user, new_status):
+    def update_order_status(self, user, new_status):
         try:
-            order = Order.objects.get(pk=order_id, user=user)
+            order = Order.objects.get(pk=self, user=user)
             order.status = new_status
             order.save()
             return True
