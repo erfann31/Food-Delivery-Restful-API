@@ -3,18 +3,14 @@ import random
 from django.core.validators import MaxValueValidator
 from django.db import models
 
-from consts.constants import CATEGORY_CHOICES
+from consts.constants import CATEGORY_CHOICES, RESTAURANT_TAG_CHOICES
 
 
 class Restaurant(models.Model):
     header_image = models.ImageField(upload_to='restaurant_images/', blank=True, null=True)
     profile_picture = models.ImageField(upload_to='restaurant_profile_pics/', blank=True, null=True)
-    TAG_CHOICES = [
-        ('Free delivery', 'Free delivery'),
-        ('Buy 2 get 1 free', 'Buy 2 get 1 free'),
-    ]
-    tag1 = models.CharField(max_length=50, choices=TAG_CHOICES, blank=True, null=True)
-    tag2 = models.CharField(max_length=50, choices=TAG_CHOICES, blank=True, null=True)
+    tag1 = models.CharField(max_length=50, choices=RESTAURANT_TAG_CHOICES, blank=True, null=True)
+    tag2 = models.CharField(max_length=50, choices=RESTAURANT_TAG_CHOICES, blank=True, null=True)
     stars = models.FloatField(default=0)
     stars_count = models.IntegerField(default=0)
     distance = models.FloatField(default=0)

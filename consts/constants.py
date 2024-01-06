@@ -19,3 +19,7 @@ STATUS_CHOICES = [
     (ONGOING, 'Ongoing'),
     (COMPLETED, 'Completed'),
 ]
+RESTAURANT_TAG_CHOICES = [
+    ('Free delivery', 'Free delivery'),
+    ('Buy 2 get 1 free', 'Buy 2 get 1 free'),
+]
