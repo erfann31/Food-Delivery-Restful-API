@@ -7,7 +7,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from discount_code.models.discount_code import DiscountCode
 from order.models.order_item import Order, OrderItem
-from .serializers import OrderSerializer, OrderItemSerializer
+from order.serializers.order_item_serializer import  OrderItemSerializer
+from order.serializers.order_serializer import OrderSerializer
 
 
 @api_view(['POST'])
