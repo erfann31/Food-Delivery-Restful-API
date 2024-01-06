@@ -8,7 +8,6 @@ from food.serializers.food_serializer import FoodSerializer
 
 class FoodViewSet(ModelViewSet):
     queryset = Food.objects.all()
-
     def get_serializer_class(self):
         if self.action == 'create' or self.action == 'update':
             return FoodCreateSerializer
