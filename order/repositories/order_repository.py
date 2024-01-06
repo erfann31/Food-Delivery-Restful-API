@@ -1,4 +1,6 @@
-from discount_code.models.discount_code import DiscountCode
+import random
+
+from consts.constants import ESTIMATED_ARRIVAL_CHOICES
 from order.models.order import Order
 
 
@@ -7,6 +9,9 @@ class OrderRepository:
     def create_order(order_data, user):
         return Order.objects.create(user=user, **order_data)
 
+    @staticmethod
+    def generate_random_estimated_arrival():
+        return random.choice([i for i, _ in ESTIMATED_ARRIVAL_CHOICES])
     @staticmethod
     def get_completed_orders(user):
         return Order.objects.filter(user=user, status='Completed')
