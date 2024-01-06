@@ -11,3 +11,11 @@ CATEGORY_CHOICES = [
     ('Vegetables', 'Vegetables'),
     ('Other', 'Other'),
 ]
+
+ESTIMATED_ARRIVAL_CHOICES = [(i, f'{i} minutes') for i in range(20, 91)]
+ONGOING = 'Ongoing'
+COMPLETED = 'Completed'
+STATUS_CHOICES = [
+    (ONGOING, 'Ongoing'),
+    (COMPLETED, 'Completed'),
+]

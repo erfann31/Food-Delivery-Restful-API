@@ -3,19 +3,12 @@ import random
 from django.db import models
 
 from address.models.address import Address
+from consts.constants import STATUS_CHOICES, ONGOING, ESTIMATED_ARRIVAL_CHOICES
 from discount_code.models.discount_code import DiscountCode
 from user.models import CustomUser
 
 
 class Order(models.Model):
-    ESTIMATED_ARRIVAL_CHOICES = [(i, f'{i} minutes') for i in range(20, 91)]
-    ONGOING = 'Ongoing'
-    COMPLETED = 'Completed'
-    STATUS_CHOICES = [
-        (ONGOING, 'Ongoing'),
-        (COMPLETED, 'Completed'),
-    ]
-
     user = models.ForeignKey(CustomUser, related_name='orders', on_delete=models.CASCADE)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=ONGOING)
@@ -27,7 +20,7 @@ class Order(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.estimated_arrival:
-            self.estimated_arrival = random.choice([i for i, _ in self.ESTIMATED_ARRIVAL_CHOICES])
+            self.estimated_arrival = random.choice([i for i, _ in ESTIMATED_ARRIVAL_CHOICES])
         super(Order, self).save(*args, **kwargs)
 
     def __str__(self):
