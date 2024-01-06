@@ -3,7 +3,7 @@ from rest_framework import serializers
 from address.models.address import Address
 from address.serializers.address_serializer import AddressSerializer
 from discount_code.models.discount_code import DiscountCode
-from discount_code.serializers import DiscountCodeSerializer
+from discount_code.serializers.discount_code_serializer import DiscountCodeSerializer
 from food.models.food import Food
 from order.models.order_item import Order, OrderItem
 
