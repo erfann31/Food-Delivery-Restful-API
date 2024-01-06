@@ -1,9 +1,8 @@
-import random
-
-from django.core.exceptions import ValidationError
 from django.db import models
 
 from consts.constants import CATEGORY_CHOICES
+from food.repositories.food_repository import FoodRepository
+from food.utils.validate_time_range import validate_time_range
 from restaurant.models.restaurant import Restaurant
 
 
@@ -20,19 +19,17 @@ class Food(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.stars:
-            self.stars = round(random.uniform(1, 5), 1)
+            self.stars = FoodRepository.generate_random_stars()
 
         if not self.stars_count:
-            self.stars_count = random.randint(5, 1000)
+            self.stars_count = FoodRepository.generate_random_stars_count()
 
-        if not self.min_time_to_delivery:
-            self.min_time_to_delivery = random.randint(15, 75)  # Random between 15 and 75
+        if not self.min_time_to_delivery or not self.max_time_to_delivery:
+            min_time, max_time = FoodRepository.generate_random_delivery_times()
+            self.min_time_to_delivery = min_time
+            self.max_time_to_delivery = max_time
 
-        if not self.max_time_to_delivery:
-            self.max_time_to_delivery = random.randint(self.min_time_to_delivery + 15, 90)  # Random between min+15 and 90
-
-        if self.min_time_to_delivery >= self.max_time_to_delivery or self.max_time_to_delivery - self.min_time_to_delivery >= 60:
-            raise ValidationError("Invalid time range")
+        validate_time_range(self.min_time_to_delivery, self.max_time_to_delivery)
 
         super(Food, self).save(*args, **kwargs)
 
