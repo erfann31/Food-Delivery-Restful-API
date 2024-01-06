@@ -7,7 +7,7 @@ from rest_framework.viewsets import ModelViewSet
 import food.models.food as Food
 from food.serializers.food_serializer import FoodSerializer
 from restaurant.models.restaurant import Restaurant
-from .serializers import RestaurantSerializer
+from restaurant.serializers.restaurant_serializer import RestaurantSerializer
 
 
 @api_view(['GET'])

@@ -13,7 +13,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from food.models.food import Food
 from food.serializers.food_serializer import FoodSerializer
 from restaurant.models.restaurant import Restaurant
-from restaurant.serializers import RestaurantSerializer
+from restaurant.serializers.restaurant_serializer import RestaurantSerializer
 from user.forms.forms import UserRegistrationForm
 from .models import CustomUser
 from .serializers import CustomUserSerializer
