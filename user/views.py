@@ -10,9 +10,9 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from food.models import Food
+from food.models.food import Food
 from food.serializers import FoodSerializer
-from restaurant.models import Restaurant
+from restaurant.models.restaurant import Restaurant
 from restaurant.serializers import RestaurantSerializer
 from .forms import UserRegistrationForm
 from .models import CustomUser

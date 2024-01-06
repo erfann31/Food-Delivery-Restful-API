@@ -11,8 +11,8 @@ from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 
-from food.models import Food
-from restaurant.models import Restaurant
+from food.models.food import Food
+from restaurant.models.restaurant import Restaurant
 
 
 class CustomUserManager(BaseUserManager):

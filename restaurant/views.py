@@ -4,9 +4,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-import food.models as Food
+import food.models.food as Food
 from food.serializers import FoodSerializer
-from .models import Restaurant
+from restaurant.models.restaurant import Restaurant
 from .serializers import RestaurantSerializer
 
 

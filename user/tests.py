@@ -6,8 +6,8 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 
-from food.models import Food
-from restaurant.models import Restaurant
+from food.models.food import Food
+from restaurant.models.restaurant import Restaurant
 from user.models import CustomUser
 from user.views import CustomUserViewSet
 

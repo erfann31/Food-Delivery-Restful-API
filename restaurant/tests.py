@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from restaurant.models import Restaurant
+from restaurant.models.restaurant import Restaurant
 from restaurant.views import RestaurantViewSet
 
 
