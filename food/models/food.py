@@ -1,8 +1,7 @@
 from django.db import models
 
 from consts.constants import CATEGORY_CHOICES
-from food.repositories.food_repository import FoodRepository
-from food.utils.validate_time_range import validate_time_range
+from food.utils.save_food_utility import validate_time_range, generate_random_delivery_times, generate_random_stars_count, generate_random_stars
 from restaurant.models.restaurant import Restaurant
 
 
@@ -19,13 +18,13 @@ class Food(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.stars:
-            self.stars = FoodRepository.generate_random_stars()
+            self.stars = generate_random_stars()
 
         if not self.stars_count:
-            self.stars_count = FoodRepository.generate_random_stars_count()
+            self.stars_count = generate_random_stars_count()
 
         if not self.min_time_to_delivery or not self.max_time_to_delivery:
-            min_time, max_time = FoodRepository.generate_random_delivery_times()
+            min_time, max_time = generate_random_delivery_times()
             self.min_time_to_delivery = min_time
             self.max_time_to_delivery = max_time
 
