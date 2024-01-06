@@ -195,8 +195,8 @@ class AddToFavoritesViewTests(APITestCase):
         }
 
         with patch('user.views.CustomUser.objects.get') as mock_get_user, \
-                patch('restaurant.models.Restaurant.objects.get') as mock_get_restaurant, \
-                patch('food.models.Food.objects.get') as mock_get_food:
+                patch('restaurant.models.restaurant.Restaurant.objects.get') as mock_get_restaurant, \
+                patch('food.models.food.Food.objects.get') as mock_get_food:
             mock_get_user.return_value = user
             mock_get_restaurant.return_value = restaurant
             mock_get_food.return_value = food
@@ -238,7 +238,7 @@ class AddToFavoritesViewTests(APITestCase):
         request_data = {'restaurant_ids': [invalid_restaurant_id], 'food_ids': []}
 
         with patch('user.views.CustomUser.objects.get') as mock_get_user, \
-                patch('restaurant.models.Restaurant.objects.get') as mock_get_restaurant:
+                patch('restaurant.models.restaurant.Restaurant.objects.get') as mock_get_restaurant:
             mock_get_user.return_value = self.user
             mock_get_restaurant.side_effect = Restaurant.DoesNotExist
 
@@ -264,8 +264,8 @@ class RemoveFromFavoritesViewTests(APITestCase):
         }
 
         with patch('user.views.CustomUser.objects.get') as mock_get_user, \
-                patch('restaurant.models.Restaurant.objects.get') as mock_get_restaurant, \
-                patch('food.models.Food.objects.get') as mock_get_food:
+                patch('restaurant.models.restaurant.Restaurant.objects.get') as mock_get_restaurant, \
+                patch('food.models.food.Food.objects.get') as mock_get_food:
             mock_get_user.return_value = self.user
             mock_get_restaurant.return_value = self.restaurant
             mock_get_food.return_value = self.food
@@ -297,7 +297,7 @@ class RemoveFromFavoritesViewTests(APITestCase):
         request_data = {'restaurant_ids': [invalid_restaurant_id], 'food_ids': []}
 
         with patch('user.views.CustomUser.objects.get') as mock_get_user, \
-                patch('restaurant.models.Restaurant.objects.get') as mock_get_restaurant:
+                patch('restaurant.models.restaurant.Restaurant.objects.get') as mock_get_restaurant:
             mock_get_user.return_value = self.user
             mock_get_restaurant.side_effect = Restaurant.DoesNotExist
 

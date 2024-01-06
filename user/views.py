@@ -14,7 +14,7 @@ from food.models.food import Food
 from food.serializers import FoodSerializer
 from restaurant.models.restaurant import Restaurant
 from restaurant.serializers import RestaurantSerializer
-from .forms import UserRegistrationForm
+from user.forms.forms import UserRegistrationForm
 from .models import CustomUser
 from .serializers import CustomUserSerializer
 
