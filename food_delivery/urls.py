@@ -28,7 +28,7 @@ schema_view = get_schema_view(
     public=True,
 )
 router = routers.DefaultRouter()
-router.register(r'addresses', address_views.AddressViewSet)
+# router.register(r'addresses', address_views.AddressViewSet)
 router.register(r'foods', food_views.FoodViewSet)
 router.register(r'orders', order_views.OrderViewSet)
 router.register(r'order_items', order_views.OrderItemViewSet)
