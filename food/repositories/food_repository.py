@@ -7,6 +7,9 @@ from food.serializers.food_serializer import FoodSerializer
 
 class FoodRepository:
     @staticmethod
+    def get_food_by_id(food_id):
+        return Food.objects.get(pk=food_id)
+    @staticmethod
     def get_foods_by_category_for_restaurant(restaurant):
         foods_by_category = {}
         for category in CATEGORY_CHOICES:
