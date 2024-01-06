@@ -28,7 +28,6 @@ schema_view = get_schema_view(
 router = routers.DefaultRouter()
 router.register(r'foods', food_views.FoodViewSet)
 router.register(r'restaurant', restaurant_views.RestaurantViewSet)
-router.register(r'users', user_views.CustomUserViewSet)
 router.register(r'discount_codes', discount_code_views.DiscountCodeViewSet)
 
 urlpatterns = [
