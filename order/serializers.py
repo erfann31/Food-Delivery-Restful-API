@@ -1,11 +1,11 @@
 from rest_framework import serializers
 
-from address.models import Address
+from address.models.address import Address
 from address.serializers import AddressSerializer
-from discount_code.models import DiscountCode
+from discount_code.models.discount_code import DiscountCode
 from discount_code.serializers import DiscountCodeSerializer
-from food.models import Food
-from .models import Order, OrderItem
+from food.models.food import Food
+from order.models.order_item import Order, OrderItem
 
 
 class OrderItemSerializer(serializers.ModelSerializer):

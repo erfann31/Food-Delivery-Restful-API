@@ -2,9 +2,8 @@ import random
 
 from django.db import models
 
-from address.models import Address
-from discount_code.models import DiscountCode
-from food.models import Food
+from address.models.address import Address
+from discount_code.models.discount_code import DiscountCode
 from user.models import CustomUser
 
 
@@ -34,11 +33,3 @@ class Order(models.Model):
     def __str__(self):
         return f"Order ID: {self.pk} - Status: {self.status}"
 
-
-class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    food = models.ForeignKey(Food, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-
-    def __str__(self):
-        return f"{self.food.name} - Quantity: {self.quantity}"

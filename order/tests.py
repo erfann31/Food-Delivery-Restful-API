@@ -6,12 +6,12 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 
-from address.models import Address
-from discount_code.models import DiscountCode
-from food.models import Food
-from order.models import Order, OrderItem
+from address.models.address import Address
+from discount_code.models.discount_code import DiscountCode
+from food.models.food import Food
+from order.models.order_item import Order, OrderItem
 from order.views import OrderItemViewSet, OrderViewSet
-from restaurant.models import Restaurant
+from restaurant.models.restaurant import Restaurant
 
 User = get_user_model()
 

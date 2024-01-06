@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from discount_code.models import DiscountCode
-from .models import Order, OrderItem
+from discount_code.models.discount_code import DiscountCode
+from order.models.order_item import Order, OrderItem
 from .serializers import OrderSerializer, OrderItemSerializer
 
 
