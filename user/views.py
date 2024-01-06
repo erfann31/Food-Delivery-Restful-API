@@ -8,11 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from food.models.food import Food
-from food.repositories.food_repository import FoodRepository
 from food.serializers.food_serializer import FoodSerializer
-from restaurant.models.restaurant import Restaurant
-from restaurant.repositories.restaurant_repository import RestaurantRepository
 from restaurant.serializers.restaurant_serializer import RestaurantSerializer
 from user.forms.forms import UserRegistrationForm
 from user.serializers.custom_user_serializer import CustomUserSerializer
@@ -20,13 +16,15 @@ from .models import CustomUser
 from .repositories.custom_user_repository import CustomUserRepository
 from .repositories.token_repository import TokenRepository
 from .repositories.user_favorite_repository import UserFavoriteRepository
+from .utils.email_sender import send_verification_email, send_password_reset_email
 
 
 class TokenObtainPairView(APIView):
     authentication_classes = []
     permission_classes = []
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         username = request.data.get('username')
         password = request.data.get('password')
 
@@ -46,8 +44,8 @@ def register_user(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
+            send_verification_email(user)
             user.save()
-            user.send_verification_email()
             serialized_user = CustomUserSerializer(user)
             return Response(serialized_user.data, status=status.HTTP_201_CREATED)
         return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -76,7 +74,7 @@ def password_reset_request(request):
         user = CustomUserRepository.get_user_by_email(email)
         if user:
             CustomUserRepository.generate_password_reset_token(user)
-            user.send_password_reset_email()
+            send_password_reset_email(user)
             return Response({'message': "Password reset link sent to your email."}, status=status.HTTP_200_OK)
         else:
             return Response({'message': "User not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -140,6 +138,7 @@ def remove_from_favorites(request):
         return Response({'message': 'Removed from favorites successfully'}, status=status.HTTP_200_OK)
     except CustomUser.DoesNotExist:
         return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['PATCH'])
 @authentication_classes([JWTAuthentication])
