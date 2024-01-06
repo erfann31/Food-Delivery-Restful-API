@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import DiscountCode
+from discount_code.models.discount_code import DiscountCode
 
 
 class DiscountCodeSerializer(serializers.ModelSerializer):

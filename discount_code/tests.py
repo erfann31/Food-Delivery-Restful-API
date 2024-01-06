@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from discount_code.models import DiscountCode
+from discount_code.models.discount_code import DiscountCode
 from discount_code.views import DiscountCodeViewSet
 
 
