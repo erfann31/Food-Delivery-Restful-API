@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 import food.models.food as Food
-from food.serializers import FoodSerializer
+from food.serializers.food_serializer import FoodSerializer
 from restaurant.models.restaurant import Restaurant
 from .serializers import RestaurantSerializer
 

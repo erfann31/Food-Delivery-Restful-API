@@ -11,7 +11,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from food.models.food import Food
-from food.serializers import FoodSerializer
+from food.serializers.food_serializer import FoodSerializer
 from restaurant.models.restaurant import Restaurant
 from restaurant.serializers import RestaurantSerializer
 from user.forms.forms import UserRegistrationForm

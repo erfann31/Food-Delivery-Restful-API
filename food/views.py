@@ -1,7 +1,9 @@
 from rest_framework.viewsets import ModelViewSet
 
 from food.models.food import Food
-from food.serializers import FoodSerializer, FoodCreateSerializer, FoodRetrieveSerializer
+from food.serializers.food_create_serializer import FoodCreateSerializer
+from food.serializers.food_retrieve_serializer import FoodRetrieveSerializer
+from food.serializers.food_serializer import FoodSerializer
 
 
 class FoodViewSet(ModelViewSet):
