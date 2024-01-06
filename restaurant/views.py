@@ -1,28 +1,27 @@
-import random
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-import food.models.food as Food
+from food.repositories.food_repository import FoodRepository
 from food.serializers.food_serializer import FoodSerializer
 from restaurant.models.restaurant import Restaurant
+from restaurant.repositories.restaurant_repository import RestaurantRepository
 from restaurant.serializers.restaurant_serializer import RestaurantSerializer
 
 
 @api_view(['GET'])
 def get_home(request):
-    random_restaurants = random.sample(list(Restaurant.objects.all()), 6)
+    random_restaurants = RestaurantRepository.get_random_restaurants(6)
     restaurant_serializer = RestaurantSerializer(random_restaurants, many=True)
 
-    random_categories = random.sample(Food.CATEGORY_CHOICES, 3)
+    random_categories = FoodRepository.get_random_food_categories(3)
 
     food_data = []
     for category in random_categories:
-        category_foods = Food.Food.objects.filter(category=category[0]).order_by('?')[:3]
+        category_foods = FoodRepository.get_random_foods_by_category(category, 3)
         food_serializer = FoodSerializer(category_foods, many=True)
         food_data.append({
-            'category': category[0],
+            'category': category,
             'foods': food_serializer.data
         })
 
@@ -35,11 +34,8 @@ def get_home(request):
 @api_view(['GET'])
 def get_restaurant_with_dishes(request, restaurant_id):
     try:
-        restaurant = Restaurant.objects.get(pk=restaurant_id)
-        foods_by_category = {}
-        for category in dict(Food.CATEGORY_CHOICES).keys():
-            foods = Food.Food.objects.filter(restaurant=restaurant, category=category).order_by('category')
-            foods_by_category[category] = FoodSerializer(foods, many=True).data
+        restaurant = RestaurantRepository.get_restaurant_by_id(restaurant_id)
+        foods_by_category = FoodRepository.get_foods_by_category_for_restaurant(restaurant)
 
         restaurant_serializer = RestaurantSerializer(restaurant)
         return Response({
@@ -48,7 +44,6 @@ def get_restaurant_with_dishes(request, restaurant_id):
         })
     except Restaurant.DoesNotExist:
         return Response({'message': 'Restaurant not found'}, status=404)
-
 
 class RestaurantViewSet(ModelViewSet):
     queryset = Restaurant.objects.all()
