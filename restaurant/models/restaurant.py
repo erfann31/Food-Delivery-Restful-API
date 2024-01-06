@@ -4,6 +4,7 @@ from django.core.validators import MaxValueValidator
 from django.db import models
 
 from consts.constants import CATEGORY_CHOICES, RESTAURANT_TAG_CHOICES
+from restaurant.repositories.restaurant_repository import RestaurantRepository
 
 
 class Restaurant(models.Model):
@@ -25,12 +26,12 @@ class Restaurant(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.stars:
-            self.stars = round(random.uniform(1, 5), 1)
+            self.stars = RestaurantRepository.generate_random_stars()
 
         if not self.stars_count:
-            self.stars_count = random.randint(500, 10000)
+            self.stars_count = RestaurantRepository.generate_random_stars_count()
 
         if not self.distance:
-            self.distance = round(random.uniform(0.3, 5), 2)
+            self.distance = RestaurantRepository.generate_random_distance()
 
         super(Restaurant, self).save(*args, **kwargs)
