@@ -16,7 +16,7 @@ from restaurant.models.restaurant import Restaurant
 from restaurant.serializers.restaurant_serializer import RestaurantSerializer
 from user.forms.forms import UserRegistrationForm
 from .models import CustomUser
-from .serializers import CustomUserSerializer
+from user.serializers.custom_user_serializer import CustomUserSerializer
 
 
 class TokenObtainPairView(APIView):
