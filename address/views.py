@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from .models import Address
+from address.models.address import Address
 from .serializers import AddressSerializer
 
 
