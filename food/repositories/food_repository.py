@@ -4,13 +4,13 @@ from consts.constants import CATEGORY_CHOICES
 from food.models.food import Food
 from food.serializers.food_serializer import FoodSerializer
 from food.utils.save_food_utility import generate_random_stars, generate_random_stars_count, generate_random_delivery_times
-from food.utils.validate_time_range import validate_time_range
 
 
 class FoodRepository:
     @staticmethod
     def get_food_by_id(food_id):
         return Food.objects.get(pk=food_id)
+
     @staticmethod
     def get_foods_by_category_for_restaurant(restaurant):
         foods_by_category = {}
