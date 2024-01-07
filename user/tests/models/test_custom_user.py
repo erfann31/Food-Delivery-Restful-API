@@ -24,7 +24,8 @@ class CustomUserModelTestCase(TestCase):
             CustomUser.objects.create_user(**self.user_data)
             mock_create_user.assert_called_once_with(**self.user_data)
 
-    def test_create_superuser(self):
+    @staticmethod
+    def test_create_superuser():
         superuser_data = {
             'email': 'admin@example.com',
             'password': 'admin123'

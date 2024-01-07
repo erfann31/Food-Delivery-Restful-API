@@ -1,8 +1,8 @@
 import unittest
-from django.test import TestCase
-from user.models import CustomUser
-from unittest.mock import patch
 
+from django.test import TestCase
+
+from user.models import CustomUser
 from user.serializers.custom_user_serializer import CustomUserSerializer
 
 
@@ -42,6 +42,7 @@ class CustomUserSerializerTestCase(TestCase):
     #         serializer.is_valid(raise_exception=True)
     #         serializer.save()
     #         mock_create_user.assert_called_once_with(**validated_data)
+
 
 if __name__ == '__main__':
     unittest.main()

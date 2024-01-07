@@ -4,7 +4,6 @@ from django.test import TestCase
 
 from user.models import CustomUser
 from user.repositories.custom_user_repository import CustomUserRepository
-from user.repositories.token_repository import TokenRepository
 
 
 class CustomUserRepositoryTestCase(TestCase):
@@ -46,5 +45,3 @@ class CustomUserRepositoryTestCase(TestCase):
         with patch.object(CustomUser.objects, 'get') as mock_get:
             CustomUserRepository.get_user_by_reset_password_token('reset_password_token')
             mock_get.assert_called_once_with(password_reset_token='reset_password_token')
-
-

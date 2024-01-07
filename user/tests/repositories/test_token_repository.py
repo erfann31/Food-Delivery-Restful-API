@@ -24,7 +24,7 @@ class TokenRepositoryTestCase(TestCase):
 
     def test_generate_password_reset_token(self):
         with patch('user.repositories.token_repository.TokenRepository.generate_password_reset_token') as mock_generate_token, \
-                patch.object(CustomUser, 'save') as mock_user_save:
+                patch.object(CustomUser, 'save'):
             TokenRepository.generate_password_reset_token(self.user)
             self.assertTrue(mock_generate_token.called)
             # mock_user_save.assert_called_once()

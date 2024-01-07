@@ -53,11 +53,10 @@ class TestRegisterUserView(unittest.TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data, {'email': ['Enter a valid email address.']})
 
-    @patch('user.utils.email_sender.send_verification_email')
     @patch('user.utils.token_generator.generate_verification_token')
     @patch('user.utils.url_generator.get_verification_url')
     @patch('user.utils.email_sender.render_to_string')
-    def test_send_verification_email(self, mock_render_to_string, mock_get_verification_url, mock_generate_verification_token, mock_send_mail):
+    def test_send_verification_email(self, mock_render_to_string, mock_get_verification_url, mock_generate_verification_token):
         user = CustomUser(name='Test User', email='test@example.com')
         user.verification_token = 'mock_token'
 

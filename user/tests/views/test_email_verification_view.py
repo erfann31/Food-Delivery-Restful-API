@@ -1,9 +1,11 @@
 import unittest
 from unittest.mock import patch, MagicMock
+
 from django.test import RequestFactory
-from django.http import HttpResponse
-from user.views import email_verification_view
+
 from user.models import CustomUser
+from user.views import email_verification_view
+
 
 class TestEmailVerificationView(unittest.TestCase):
 

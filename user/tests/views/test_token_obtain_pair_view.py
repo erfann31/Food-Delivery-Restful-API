@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from rest_framework.test import APIRequestFactory
-from rest_framework import status
+
 from django.contrib.auth.models import User
-from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.test import APIRequestFactory
 
 from user.repositories.token_repository import TokenRepository
 from user.views import TokenObtainPairView

@@ -7,6 +7,8 @@ from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 
 User = get_user_model()
+
+
 class UpdateProfileViewTests(APITestCase):
     def setUp(self):
         self.user = User.objects.create(email='test@example.com', name='Test User')
@@ -72,4 +74,3 @@ class UpdateProfileViewTests(APITestCase):
             response = self.client.patch(url, request_data, format='json', **headers)
 
             self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-

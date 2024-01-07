@@ -5,8 +5,6 @@ from django.test import TestCase
 
 from user.forms.forms import UserRegistrationForm
 from user.models import CustomUser
-from unittest.mock import patch
-
 
 
 class UserRegistrationFormTestCase(TestCase):
@@ -35,6 +33,7 @@ class UserRegistrationFormTestCase(TestCase):
     #             email=user_data['email'],
     #             password=user_data['password']
     #         )
+
 
 if __name__ == '__main__':
     unittest.main()

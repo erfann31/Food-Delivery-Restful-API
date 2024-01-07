@@ -1,9 +1,12 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from rest_framework.test import APIRequestFactory
+
 from rest_framework import status
-from user.views import password_reset_request
+from rest_framework.test import APIRequestFactory
+
 from user.models import CustomUser
+from user.views import password_reset_request
+
 
 class TestPasswordResetRequestView(unittest.TestCase):
 
