@@ -22,7 +22,6 @@ class DiscountCodeModelTestCase(TestCase):
         self.assertEqual(self.discount_code.discount_percent, 10.00)
 
     def test_code_text_field_unique_constraint(self):
-        # Create a DiscountCode with an existing code_text
         with self.assertRaises(Exception):
             DiscountCode.objects.create(
                 discount_percent=20.00,
