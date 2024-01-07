@@ -39,17 +39,15 @@ class TokenObtainPairView(APIView):
 
 @api_view(['POST'])
 def register_user(request):
-    if request.method == 'POST':
-        form = UserRegistrationForm(request.data)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
-            send_verification_email(user)
-            user.save()
-            serialized_user = CustomUserSerializer(user)
-            return Response(serialized_user.data, status=status.HTTP_201_CREATED)
-        return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
-    return Response({'message': 'Invalid method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    form = UserRegistrationForm(request.data)
+    if form.is_valid():
+        user = form.save(commit=False)
+        user.set_password(form.cleaned_data['password'])
+        send_verification_email(user)
+        user.save()
+        serialized_user = CustomUserSerializer(user)
+        return Response(serialized_user.data, status=status.HTTP_201_CREATED)
+    return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -57,7 +55,7 @@ def email_verification_view(request, token):
     user = CustomUserRepository.get_user_by_verification_token(token)
     if user:
         if not user.verified:
-            if not CustomUserRepository.check_verification_token_expired(user):
+            if not TokenRepository.check_verification_token_expired(user):
                 CustomUserRepository.update_user_verification_status(user)
                 return HttpResponse("Email verified successfully")
             else:
@@ -69,21 +67,19 @@ def email_verification_view(request, token):
 
 @api_view(['POST'])
 def password_reset_request(request):
-    if request.method == 'POST':
-        email = request.data.get('email')
-        user = CustomUserRepository.get_user_by_email(email)
-        if user:
-            CustomUserRepository.generate_password_reset_token(user)
-            send_password_reset_email(user)
-            return Response({'message': "Password reset link sent to your email."}, status=status.HTTP_200_OK)
-        else:
-            return Response({'message': "User not found."}, status=status.HTTP_404_NOT_FOUND)
-    return Response({'message': 'Invalid method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    email = request.data.get('email')
+    user = CustomUserRepository.get_user_by_email(email)
+    if user:
+        TokenRepository.generate_password_reset_token(user)
+        send_password_reset_email(user)
+        return Response({'message': "Password reset link sent to your email."}, status=status.HTTP_200_OK)
+    else:
+        return Response({'message': "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
 def password_reset_confirm(request, token):
     user = CustomUserRepository.get_user_by_reset_password_token(token)
-    if not user or CustomUserRepository.check_password_reset_token_expired(user):
+    if not user or TokenRepository.check_password_reset_token_expired(user):
         return HttpResponse("Invalid or expired token.")
     if request.method == 'POST':
         new_password = request.POST.get('new_password')
@@ -103,7 +99,7 @@ def add_to_favorites(request):
     restaurant_ids = request.data.get('restaurant_ids', [])
     food_ids = request.data.get('food_ids', [])
     if not restaurant_ids and not food_ids:
-        return Response({'error': 'At least one restaurant_id or food_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'At least one restaurant_ids or food_ids field is required'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         for restaurant_id in restaurant_ids:
@@ -126,7 +122,7 @@ def remove_from_favorites(request):
     food_ids = request.data.get('food_ids', [])
 
     if not restaurant_ids and not food_ids:
-        return Response({'error': 'At least one restaurant_id or food_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'At least one restaurant_ids or food_ids field is required'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         for restaurant_id in restaurant_ids:
