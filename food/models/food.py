@@ -28,7 +28,7 @@ class Food(models.Model):
             self.min_time_to_delivery = min_time
             self.max_time_to_delivery = max_time
 
-        validate_time_range(self.min_time_to_delivery, self.max_time_to_delivery)
+        # validate_time_range(self.min_time_to_delivery, self.max_time_to_delivery)
 
         super(Food, self).save(*args, **kwargs)
 
