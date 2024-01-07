@@ -1,5 +1,3 @@
-import random
-
 from django.core.validators import MaxValueValidator
 from django.db import models
 
