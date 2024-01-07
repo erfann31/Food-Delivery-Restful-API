@@ -46,5 +46,14 @@ class OrderRepository:
         order.discount_code = discount_code
         order.save()
 
+    @staticmethod
     def get_user_orders_by_status(user, status):
         return Order.objects.filter(user=user, status=status)
+
+    @staticmethod
+    def get_order_by_id_and_user(order_id, user):
+        try:
+            order = Order.objects.get(pk=order_id, user=user)
+            return order
+        except Order.DoesNotExist:
+            return None

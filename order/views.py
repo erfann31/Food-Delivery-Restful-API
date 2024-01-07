@@ -62,7 +62,7 @@ def cancel_order(request, order_id):
 @permission_classes([IsAuthenticated])
 def add_discount_code(request, order_id):
     try:
-        order = Order.objects.get(pk=order_id, user=request.user)
+        order = OrderRepository.get_order_by_id_and_user(order_id, request.user)
         discount_code_text = request.data.get('discount_code')
 
         if not discount_code_text:
