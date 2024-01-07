@@ -4,7 +4,8 @@ from address.models.address import Address
 from address.serializers.address_serializer import AddressSerializer
 from discount_code.models.discount_code import DiscountCode
 from discount_code.serializers.discount_code_serializer import DiscountCodeSerializer
-from order.models.order_item import Order, OrderItem
+from order.models.order import Order
+from order.models.order_item import OrderItem
 from order.serializers.order_item_serializer import OrderItemSerializer
 
 

@@ -34,7 +34,7 @@ class FoodRepository:
         stars_count = generate_random_stars_count()
         min_time_to_delivery, max_time_to_delivery = generate_random_delivery_times()
 
-        validate_time_range(min_time_to_delivery, max_time_to_delivery)
+        # validate_time_range(min_time_to_delivery, max_time_to_delivery)
 
         food = Food(
             name=name,
