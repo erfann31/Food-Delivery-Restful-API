@@ -58,7 +58,6 @@ class TestFoodModel(unittest.TestCase):
             self.food.save()
 
     def test_save_no_stars_no_stars_count_no_delivery_times(self):
-        # Testing the case when no stars, stars_count, or delivery times are provided
         with patch('food.utils.save_food_utility.generate_random_stars',), \
                 patch('food.utils.save_food_utility.generate_random_stars_count', ), \
                 patch('food.utils.save_food_utility.generate_random_delivery_times', ), \
@@ -100,9 +99,9 @@ class TestFoodModel(unittest.TestCase):
             upper_bound = 1000
 
             self.assertGreaterEqual(self.food.stars_count, lower_bound)
-            self.assertLessEqual(self.food.stars_count, upper_bound)  # Should remain unchanged
-            self.assertEqual(self.food.min_time_to_delivery, 20)  # Should remain unchanged
-            self.assertEqual(self.food.max_time_to_delivery, 50)  # Should remain unchanged
+            self.assertLessEqual(self.food.stars_count, upper_bound)
+            self.assertEqual(self.food.min_time_to_delivery, 20)
+            self.assertEqual(self.food.max_time_to_delivery, 50)
 
 
 if __name__ == '__main__':

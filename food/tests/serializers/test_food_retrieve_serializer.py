@@ -18,7 +18,6 @@ class TestFoodRetrieveSerializer(unittest.TestCase):
         self.food = MagicMock()
         self.food_serializer = FoodRetrieveSerializer(instance=self.food)
 
-
     def test_restaurant_detail_serializer_used(self):
         self.food_serializer = FoodRetrieveSerializer(instance=self.food)
         self.assertIn('restaurant', self.food_serializer.fields)

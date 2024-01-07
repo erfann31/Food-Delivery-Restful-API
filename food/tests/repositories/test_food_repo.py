@@ -1,7 +1,6 @@
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
-from consts.constants import CATEGORY_CHOICES
 from food.models.food import Food
 from food.repositories.food_repository import FoodRepository
 from restaurant.models.restaurant import Restaurant
@@ -34,14 +33,7 @@ class TestFoodRepository(unittest.TestCase):
         self.assertEqual(len(result), count)
         mock_food_objects.filter.assert_called_once_with(category=category)
 
-
-    @patch('food.models.food.Food.save')
-    @patch('food.utils.save_food_utility.generate_random_stars')
-    @patch('food.utils.save_food_utility.generate_random_stars_count')
-    @patch('food.utils.save_food_utility.generate_random_delivery_times')
-    @patch('food.utils.validate_time_range.validate_time_range')
-    def test_save_food_with_random_attrs(self, mock_validate_time_range, mock_generate_random_delivery_times,
-                                         mock_generate_random_stars_count, mock_generate_random_stars, mock_save):
+    def test_save_food_with_random_attrs(self):
         name = "New Food"
         price = 15.99
         category = "Other"
