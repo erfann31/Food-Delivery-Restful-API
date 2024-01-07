@@ -1,14 +1,15 @@
 import unittest
 from unittest.mock import patch, MagicMock
+
 from rest_framework.test import APIRequestFactory
 
 from restaurant.views import get_home
 
 
 class TestGetHomeView(unittest.TestCase):
+
     @patch('restaurant.serializers.restaurant_serializer.RestaurantSerializer')
     @patch('restaurant.repositories.restaurant_repository.RestaurantRepository.get_random_restaurants')
-
     def test_get_random_restaurants_section(self, mock_serializer, mock_get_random_restaurants):
         mock_restaurants = MagicMock()
         mock_serializer.return_value = MagicMock(data=mock_restaurants)
@@ -17,8 +18,6 @@ class TestGetHomeView(unittest.TestCase):
         request = APIRequestFactory().get('')
         response = get_home(request)
 
-        # mock_get_random_restaurants.assert_called_once_with(6)
-        # mock_serializer.assert_called_once_with(mock_restaurants, many=True)
         self.assertEqual(response.status_code, 200)
         self.assertIn('restaurants', response.data)
 
@@ -38,6 +37,5 @@ class TestGetHomeView(unittest.TestCase):
         response = get_home(request)
 
         mock_get_random_food_categories.assert_called_once_with(3)
-        # mock_serializer.assert_called()
         self.assertEqual(response.status_code, 200)
         self.assertIn('food_series', response.data)

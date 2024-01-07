@@ -1,6 +1,5 @@
 import unittest
-from unittest.mock import patch
-from rest_framework.exceptions import ValidationError
+
 from restaurant.models.restaurant import Restaurant
 from restaurant.serializers.restaurant_id_serializer import RestaurantIdSerializer
 
