@@ -10,7 +10,7 @@ from restaurant.models.restaurant import Restaurant
 class TestFoodRepository(unittest.TestCase):
 
     def setUp(self):
-        self.food_instance = Food(name="Test Food", price=10.99, category="Other", restaurant_id=1)
+        self.food_instance = Food.objects.create(name="Test Food", price=10.99, category="Other", restaurant_id=1)
         self.restaurant = Restaurant.objects.create(name='Test Restaurant')
 
     @patch('food.models.food.Food.objects')

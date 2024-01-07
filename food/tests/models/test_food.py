@@ -10,7 +10,7 @@ from restaurant.models.restaurant import Restaurant
 class TestFoodModel(unittest.TestCase):
     def setUp(self):
         self.restaurant = Restaurant.objects.create(name='Test Restaurant')
-        self.food = Food(name='Test Food', price=10.99, category='Test Category', restaurant=self.restaurant)
+        self.food = Food.objects.create(name='Test Food', price=10.99, category='Test Category', restaurant=self.restaurant)
 
     def test_generate_random_stars(self):
         with patch('food.utils.save_food_utility.generate_random_stars',):
