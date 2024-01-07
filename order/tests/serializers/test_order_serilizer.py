@@ -1,15 +1,10 @@
-from unittest.mock import patch
-
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from address.models.address import Address
 from address.serializers.address_serializer import AddressSerializer
-from food.models.food import Food
 from order.models.order import Order
-from order.models.order_item import OrderItem
 from order.serializers.order_serializer import OrderSerializer
-from restaurant.models.restaurant import Restaurant
 
 User = get_user_model()
 
@@ -26,15 +21,14 @@ User = get_user_model()
 #     @patch('order.models.order.Order.objects.create')
 #     @patch('order.models.order_item.OrderItem.objects.create')
 #     def test_create_order_with_items(self, mock_order_item_create, mock_order_create):
-#         # Mocked instances for testing
 #         mock_order_item_create.side_effect = lambda **kwargs: OrderItem(**kwargs)
 #         mock_order_create.side_effect = lambda **kwargs: Order(**kwargs)
 #
 #         data = {
-#             'delivery_address': self.address.id,  # Replace with valid address ID
+#             'delivery_address': self.address.id,
 #             'orderItems': [
-#                 {'food': self.food1.id, 'quantity': 2},  # Replace with valid food ID
-#                 {'food': self.food2.id, 'quantity': 3}  # Replace with valid food ID
+#                 {'food': self.food1.id, 'quantity': 2},
+#                 {'food': self.food2.id, 'quantity': 3}
 #             ],
 #         }
 #
@@ -43,11 +37,9 @@ User = get_user_model()
 #
 #         created_order = serializer.save()
 #
-#         # Assertions for the mocked create methods
 #         mock_order_create.assert_called_once()
 #         mock_order_item_create.assert_any_call(order=created_order, food=1, quantity=2)
 #         mock_order_item_create.assert_any_call(order=created_order, food=2, quantity=3)
-#
 
 class OrderSerializerToRepresentationMethodTestCase(TestCase):
 
@@ -64,4 +56,3 @@ class OrderSerializerToRepresentationMethodTestCase(TestCase):
         self.assertEqual(representation['status'], 'Ongoing')
         self.assertEqual(representation['delivery_address'], AddressSerializer(instance=address).data)
         self.assertIsNotNone(representation['orderItems'])
-        # Add more assertions as needed

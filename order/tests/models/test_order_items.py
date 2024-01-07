@@ -45,7 +45,7 @@ class OrderItemModelTestCase(TestCase):
             food=self.food
         )
 
-        self.assertEqual(order_item.quantity, 1)  # Check if default quantity is set correctly
+        self.assertEqual(order_item.quantity, 1)
 
     def test_order_item_update_quantity(self):
         order_item = OrderItem.objects.create(
@@ -58,4 +58,4 @@ class OrderItemModelTestCase(TestCase):
         order_item.save()
 
         updated_order_item = OrderItem.objects.get(pk=order_item.pk)
-        self.assertEqual(updated_order_item.quantity, 5)  # Check if quantity is updated correctly
+        self.assertEqual(updated_order_item.quantity, 5)

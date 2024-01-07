@@ -28,31 +28,25 @@ class TestUpdateOrderStatusAPIView(TestCase):
 
     @patch('order.repositories.order_repository.OrderRepository.update_order_status')
     def test_update_order_status_success(self, mock_update_order_status):
-        # Mocking update_order_status method of OrderRepository for successful status update
         mock_update_order_status.return_value = True
 
-        # Making a GET request to update order status
         request = self.factory.get(self.endpoint)
         force_authenticate(request, user=self.user)
         response = update_order_status(request, self.order.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['message'], 'Order status updated to Completed')
-        # Add assertions based on the expected behavior for a successful update
 
     @patch('order.repositories.order_repository.OrderRepository.update_order_status')
     def test_update_order_status_failure(self, mock_update_order_status):
-        # Mocking update_order_status method of OrderRepository for order not found
         mock_update_order_status.return_value = False
 
-        # Making a GET request to update order status for a non-existent order
         request = self.factory.get(self.endpoint)
         force_authenticate(request, user=self.user)
         response = update_order_status(request, self.order.id)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response.data['message'], 'Order not found')
-        # Add assertions based on the expected behavior for a failed update
 
 
 if __name__ == '__main__':
