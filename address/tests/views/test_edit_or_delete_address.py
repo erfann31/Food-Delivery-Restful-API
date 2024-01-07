@@ -34,8 +34,7 @@ class TestEditOrDeleteAddressView(TestCase):
         request = self.factory.patch(f'/edit_or_delete_address/{address.id}/', {'city': ''}, content_type='application/json')
         force_authenticate(request, user=self.user)
 
-        # Assuming AddressSerializer raises a validation error for empty 'city'
-        with patch('address.views.AddressRepository.update_address') as mock_update_address:
+        with patch('address.repositories.address_repository.AddressRepository.update_address') as mock_update_address:
             mock_update_address.side_effect = serializers.ValidationError('City cannot be empty')
 
             response = edit_or_delete_address(request, address.id)
@@ -47,7 +46,7 @@ class TestEditOrDeleteAddressView(TestCase):
         request = self.factory.delete(f'/edit_or_delete_address/{address.id}/')
         force_authenticate(request, user=self.user)
 
-        with patch('address.views.AddressRepository.delete_address') as mock_delete_address:
+        with patch('address.repositories.address_repository.AddressRepository.delete_address'):
             response = edit_or_delete_address(request, address.id)
             self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 

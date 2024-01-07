@@ -32,7 +32,7 @@ class TestCreateAddressView(TestCase):
         force_authenticate(request, user=self.user)
 
         with patch('address.views.create_address') as mock_create_address:
-            mock_create_address.return_value = None  # Simulate invalid data leading to None return value
+            mock_create_address.return_value = None
 
             response = create_address(request)
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

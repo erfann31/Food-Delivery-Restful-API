@@ -13,7 +13,7 @@ class TestAddressRepository(unittest.TestCase):
 
     def setUp(self):
         User.objects.filter(email='test@example.com').delete()
-        self.user = User.objects.create(name='test', password='test',email='test@example.com')
+        self.user = User.objects.create(name='test', password='test', email='test@example.com')
 
     # def test_create_address(self):
     #     data = {'street_address': '123 Main St', 'city': 'Anytown', 'state': 'ABC', 'zipcode': '12345'}
