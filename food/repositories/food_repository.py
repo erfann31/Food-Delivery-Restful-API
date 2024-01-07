@@ -3,6 +3,8 @@ import random
 from consts.constants import CATEGORY_CHOICES
 from food.models.food import Food
 from food.serializers.food_serializer import FoodSerializer
+from food.utils.save_food_utility import generate_random_stars, generate_random_stars_count, generate_random_delivery_times
+from food.utils.validate_time_range import validate_time_range
 
 
 class FoodRepository:
@@ -26,3 +28,23 @@ class FoodRepository:
         categories = [category[0] for category in CATEGORY_CHOICES]
         return random.sample(categories, count)
 
+    @staticmethod
+    def save_food_with_random_attrs(name, price, category, restaurant):
+        stars = generate_random_stars()
+        stars_count = generate_random_stars_count()
+        min_time_to_delivery, max_time_to_delivery = generate_random_delivery_times()
+
+        validate_time_range(min_time_to_delivery, max_time_to_delivery)
+
+        food = Food(
+            name=name,
+            price=price,
+            stars=stars,
+            stars_count=stars_count,
+            min_time_to_delivery=min_time_to_delivery,
+            max_time_to_delivery=max_time_to_delivery,
+            category=category,
+            restaurant=restaurant,
+        )
+        food.save()
+        return food

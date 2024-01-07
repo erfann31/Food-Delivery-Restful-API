@@ -14,7 +14,6 @@ class Food(models.Model):
     min_time_to_delivery = models.IntegerField(default=0)
     max_time_to_delivery = models.IntegerField(default=0)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
-
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
