@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 
+from django.contrib.auth import get_user_model
 from django.core import mail
 from django.urls import reverse
 from rest_framework import status
@@ -8,6 +9,8 @@ from rest_framework.test import APIRequestFactory
 
 from user.models import CustomUser
 from user.views import register_user, send_verification_email
+
+User = get_user_model()
 
 
 class TestRegisterUserView(unittest.TestCase):
@@ -57,6 +60,7 @@ class TestRegisterUserView(unittest.TestCase):
     @patch('user.utils.url_generator.get_verification_url')
     @patch('user.utils.email_sender.render_to_string')
     def test_send_verification_email(self, mock_render_to_string, mock_get_verification_url, mock_generate_verification_token):
+        User.objects.filter(email='test@example.com').delete()
         user = CustomUser(name='Test User', email='test@example.com')
         user.verification_token = 'mock_token'
 
