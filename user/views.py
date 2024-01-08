@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework import status
@@ -43,11 +44,33 @@ def register_user(request):
     if form.is_valid():
         user = form.save(commit=False)
         user.set_password(form.cleaned_data['password'])
-        send_verification_email(user)
-        user.save()
-        serialized_user = CustomUserSerializer(user)
-        return Response(serialized_user.data, status=status.HTTP_201_CREATED)
+        if send_verification_email(user):
+            user.save()
+            serialized_user = CustomUserSerializer(user)
+            return Response(serialized_user.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'Failed to send verification email.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def resend_verification_email(request):
+    email = request.data.get('email')
+    if not email:
+        return Response({'error': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user = CustomUser.objects.get(email=email)
+    except ObjectDoesNotExist:
+        return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    if user.verified:
+        return Response({'error': 'User is already verified.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if send_verification_email(user):
+        return Response({'message': 'Verification email sent successfully.'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'error': 'Failed to send verification email.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET'])

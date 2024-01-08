@@ -8,9 +8,8 @@ from user.utils.url_generator import get_reset_url, get_verification_url
 
 
 def send_verification_email(user):
-    if not user.verification_token:
-        user.verification_token = generate_verification_token()
-        user.save()
+    user.verification_token = generate_verification_token()
+    user.save()
 
     subject = 'Verify your email'
     verification_url = get_verification_url(user.verification_token)
@@ -23,6 +22,7 @@ def send_verification_email(user):
     to = user.email
 
     send_mail(subject, plain_message, from_email, [to], html_message=message)
+    return True
 
 
 def send_password_reset_email(user):
