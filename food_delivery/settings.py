@@ -21,7 +21,7 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', )
 EMAIL_SUBJECT_PREFIX = os.getenv('EMAIL_SUBJECT_PREFIX', default='[Your App Name]')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
-BASE_URL = 'https://food-delivery-restful-api.onrender.com/'
+BASE_URL = 'https://food-delivery-restful-api.onrender.com'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
