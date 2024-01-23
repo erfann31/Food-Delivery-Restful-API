@@ -2,11 +2,12 @@ from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.shortcuts import render
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from food.serializers.food_serializer import FoodSerializer
@@ -20,24 +21,50 @@ from .repositories.user_favorite_repository import UserFavoriteRepository
 from .utils.email_sender import send_verification_email, send_password_reset_email
 
 
-class TokenObtainPairView(APIView):
-    authentication_classes = []
-    permission_classes = []
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'username': openapi.Schema(type=openapi.TYPE_STRING),
+            'password': openapi.Schema(type=openapi.TYPE_STRING),
+        },
+        required=['username', 'password'],
+    ),
+    responses={
+        200: openapi.Response(description='Successful authentication', schema=openapi.Schema(type=openapi.TYPE_OBJECT, properties={'access_token': openapi.Schema(type=openapi.TYPE_STRING)})),
+        401: openapi.Response(description='Invalid credentials', schema=openapi.Schema(type=openapi.TYPE_OBJECT, properties={'message': openapi.Schema(type=openapi.TYPE_STRING)})),
+    },
+)
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
+def token_obtain_pair_view(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
 
-    @staticmethod
-    def post(request):
-        username = request.data.get('username')
-        password = request.data.get('password')
+    user = authenticate(username=username, password=password)
 
-        user = authenticate(username=username, password=password)
-
-        if user:
-            access_token = TokenRepository.generate_token_for_user(user)
-            return Response({'access_token': access_token})
-        else:
-            return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+    if user:
+        access_token = TokenRepository.generate_token_for_user(user)
+        return Response({'access_token': access_token})
+    else:
+        return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'email': openapi.Schema(type=openapi.TYPE_STRING),
+            'password': openapi.Schema(type=openapi.TYPE_STRING),
+            'name': openapi.Schema(type=openapi.TYPE_STRING),
+        },
+        required=['email', 'password', 'name']
+    ),
+    responses={201: 'Created', 400: 'Bad Request', 500: 'Internal Server Error'},
+)
 @api_view(['POST'])
 def register_user(request):
     form = UserRegistrationForm(request.data)
@@ -53,6 +80,17 @@ def register_user(request):
     return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'email': openapi.Schema(type=openapi.TYPE_STRING),
+        },
+        required=['email']
+    ),
+    responses={200: 'OK', 404: 'Not Found', 500: 'Internal Server Error'},
+)
 @api_view(['POST'])
 def resend_verification_email(request):
     email = request.data.get('email')
@@ -111,6 +149,31 @@ def password_reset_confirm(request, token):
     return render(request, 'password_reset_confirm.html')
 
 
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'restaurant_ids': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_INTEGER)),
+            'food_ids': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_INTEGER)),
+        },
+        required=['restaurant_ids', 'food_ids'],
+    ),
+    manual_parameters=[
+        openapi.Parameter(
+            'Authorization',
+            openapi.IN_HEADER,
+            description="Bearer token",
+            type=openapi.TYPE_STRING,
+            format="Bearer <token>",
+        ),
+    ],
+    responses={
+        200: openapi.Response(description='Added to favorites successfully', schema=openapi.Schema(type=openapi.TYPE_OBJECT, properties={'message': openapi.Schema(type=openapi.TYPE_STRING)})),
+        400: openapi.Response(description='Bad Request', schema=openapi.Schema(type=openapi.TYPE_OBJECT, properties={'error': openapi.Schema(type=openapi.TYPE_STRING)})),
+        404: openapi.Response(description='User not found', schema=openapi.Schema(type=openapi.TYPE_OBJECT, properties={'message': openapi.Schema(type=openapi.TYPE_STRING)})),
+    },
+)
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])

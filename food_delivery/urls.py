@@ -12,7 +12,6 @@ from food import views as food_views
 from restaurant import views as restaurant
 from restaurant import views as restaurant_views
 from user import views as user_views
-from user.views import TokenObtainPairView
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -34,7 +33,7 @@ urlpatterns = [
                   path('verify/<str:token>/', user_views.email_verification_view, name='email-verification'),
                   path('password-reset/<str:token>/', user_views.password_reset_confirm, name='password-reset-confirm'),
                   path('api-token-auth/', views.obtain_auth_token),
-                  path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+                  path('api/token/', user_views.token_obtain_pair_view, name='token_obtain_pair'),
                   path('api-auth/', include('rest_framework.urls')),
                   path('admin/', admin.site.urls),
                   path('api/v1/users/', include('user.urls')),

@@ -33,15 +33,15 @@ INSTALLED_APPS = [
 
     'corsheaders',
 
-    'drf_yasg',
-    'rest_framework',
-
     'user',
     'address',
     'food',
     'restaurant',
     'order',
     'discount_code',
+
+    'drf_yasg',
+    'rest_framework',
 
 ]
 
