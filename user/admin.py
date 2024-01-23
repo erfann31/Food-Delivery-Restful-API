@@ -4,13 +4,14 @@ from django.utils.translation import gettext_lazy as _
 
 from .models import CustomUser
 
+
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
 
-    list_display = ['email', 'name', 'is_active', 'is_staff', 'date_joined','verified']
+    list_display = ['email', 'name', 'is_active', 'is_staff', 'date_joined', 'verified']
     search_fields = ['email', 'name']
     readonly_fields = ['verified', 'email', 'favorite_restaurants', 'favorite_foods', 'name', 'photo', 'mobile_number', 'date_joined', 'password_reset_token_created_at', 'last_login']
-    list_filter = ['verified','is_staff','is_superuser','is_active']
+    list_filter = ['verified', 'is_staff', 'is_superuser', 'is_active']
 
     fieldsets = (
         (None, {'fields': ('email',)}),
@@ -26,5 +27,6 @@ class CustomUserAdmin(UserAdmin):
         if obj:
             return self.readonly_fields + ['photo', 'mobile_number', 'favorite_restaurants', 'favorite_foods']
         return self.readonly_fields
+
 
 admin.site.register(CustomUser, CustomUserAdmin)
