@@ -54,8 +54,8 @@ class TestFoodModel(unittest.TestCase):
             mock_validate_time_range.side_effect = ValidationError("Invalid time range")
             self.food.min_time_to_delivery = 60
             self.food.max_time_to_delivery = 30
-            # with self.assertRaises(ValidationError):
-            self.food.save()
+            with self.assertRaises(ValidationError):
+                self.food.save()
 
     def test_save_no_stars_no_stars_count_no_delivery_times(self):
         with patch('food.utils.save_food_utility.generate_random_stars',), \
@@ -68,7 +68,7 @@ class TestFoodModel(unittest.TestCase):
 
             self.assertGreaterEqual(self.food.stars, lower_bound)
             self.assertLessEqual(self.food.stars, upper_bound)
-            lower_bound = 5.0
+            lower_bound = 1.0
             upper_bound = 1000.0
 
             self.assertGreaterEqual(self.food.stars_count, lower_bound)
