@@ -6,8 +6,8 @@ def generate_random_stars():
 
 
 def generate_random_stars_count():
-    return random.randint(500, 10000)
+    return random.randint(1, 1000000)
 
 
 def generate_random_distance():
-    return round(random.uniform(0.3, 5), 2)
+    return round(random.uniform(0.1, 5), 2)
