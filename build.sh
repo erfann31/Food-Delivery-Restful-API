@@ -10,7 +10,4 @@ python manage.py collectstatic --no-input
 python manage.py migrate
 #python manage.py runserver
 
-if [[ $CREATE_SUPERUSER ]];
-then
-  python manage.py create_default_superuser
-fi
+python manage.py create_default_superuser
