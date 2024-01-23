@@ -1,8 +1,10 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 
 class DiscountCode(models.Model):
-    discount_percent = models.DecimalField(max_digits=5, decimal_places=2)
+    discount_percent = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0),
+                                                                                       MaxValueValidator(100)])
     code_text = models.CharField(max_length=50, unique=True)
     is_active = models.BooleanField(default=True)
 
