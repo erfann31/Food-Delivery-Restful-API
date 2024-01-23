@@ -44,7 +44,3 @@ def get_restaurant_with_dishes(request, restaurant_id):
         })
     except Restaurant.DoesNotExist:
         return Response({'message': 'Restaurant not found'}, status=404)
-
-class RestaurantViewSet(ModelViewSet):
-    queryset = Restaurant.objects.all()
-    serializer_class = RestaurantSerializer
