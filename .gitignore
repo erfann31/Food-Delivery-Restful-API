@@ -73,7 +73,7 @@ cover/
 # Django stuff:
 *.log
 local_settings.py
-db.sqlite3
+#db.sqlite3
 db.sqlite3-journal
 
 # Flask stuff:
@@ -174,11 +174,11 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 
-/restaurant/migrations/
-/user/migrations/
-/order/migrations/
-/food/migrations/
-/address/migrations/
-/discount_code/migrations/
+#/restaurant/migrations/
+#/user/migrations/
+#/order/migrations/
+#/food/migrations/
+#/address/migrations/
+#/discount_code/migrations/
 /user_photos/
 /static/
