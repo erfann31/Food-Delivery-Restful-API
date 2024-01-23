@@ -6,7 +6,7 @@ def generate_random_stars():
 
 
 def generate_random_stars_count():
-    return random.randint(5, 1000)
+    return random.randint(1, 1000)
 
 
 def generate_random_delivery_times():
