@@ -50,5 +50,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     class Meta:
+        ordering = ['email']
         verbose_name = _('User')
         verbose_name_plural = _('Users')
