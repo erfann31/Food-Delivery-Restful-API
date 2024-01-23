@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.test import APIRequestFactory
 
 from user.repositories.token_repository import TokenRepository
-from user.views import TokenObtainPairView
+from user.views import token_obtain_pair_view
 
 
 class TestTokenObtainPairView(unittest.TestCase):
@@ -22,7 +22,7 @@ class TestTokenObtainPairView(unittest.TestCase):
             mock_generate_token.return_value = mock_access_token
 
             request = APIRequestFactory().post('/api/token/', {'username': 'test_user', 'password': 'test_password'})
-            response = TokenObtainPairView.as_view()(request)
+            response = token_obtain_pair_view(request)
 
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.assertEqual(response.data['access_token'], mock_access_token)
@@ -32,7 +32,7 @@ class TestTokenObtainPairView(unittest.TestCase):
         mock_authenticate.return_value = None
 
         request = APIRequestFactory().post('/api/token/', {'username': 'test_user', 'password': 'test_password'})
-        response = TokenObtainPairView.as_view()(request)
+        response = token_obtain_pair_view(request)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(response.data['message'], 'Invalid credentials')
