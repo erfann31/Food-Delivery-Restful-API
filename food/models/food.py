@@ -20,6 +20,7 @@ class Food(models.Model):
                                                                       MaxValueValidator(90)])
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    picture = models.ImageField(upload_to='food_pics/', blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.stars:
