@@ -26,10 +26,10 @@ from .utils.email_sender import send_verification_email, send_password_reset_ema
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
-            'username': openapi.Schema(type=openapi.TYPE_STRING),
+            'email': openapi.Schema(type=openapi.TYPE_STRING),
             'password': openapi.Schema(type=openapi.TYPE_STRING),
         },
-        required=['username', 'password'],
+        required=['email', 'password'],
     ),
     responses={
         200: openapi.Response(description='Successful authentication', schema=openapi.Schema(type=openapi.TYPE_OBJECT, properties={'access_token': openapi.Schema(type=openapi.TYPE_STRING)})),
@@ -40,16 +40,17 @@ from .utils.email_sender import send_verification_email, send_password_reset_ema
 @authentication_classes([])
 @permission_classes([])
 def token_obtain_pair_view(request):
-    username = request.data.get('username')
+    email = request.data.get('email')
     password = request.data.get('password')
-
-    user = authenticate(username=username, password=password)
+    if not email or not password:
+        return Response({'email': 'this field is required!', 'password': 'this field is required!'}, status=status.HTTP_400_BAD_REQUEST)
+    user = authenticate(email=email, password=password)
 
     if user:
         access_token = TokenRepository.generate_token_for_user(user)
         return Response({'access_token': access_token})
     else:
-        return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 @swagger_auto_schema(
