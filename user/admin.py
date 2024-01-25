@@ -10,12 +10,12 @@ class CustomUserAdmin(UserAdmin):
 
     list_display = ['email', 'name', 'is_active', 'is_staff', 'date_joined', 'verified']
     search_fields = ['email', 'name']
-    readonly_fields = ['verified', 'email', 'favorite_restaurants', 'favorite_foods', 'name', 'photo', 'mobile_number', 'date_joined', 'password_reset_token_created_at', 'last_login']
+    readonly_fields = ['verified', 'email', 'favorite_restaurants', 'favorite_foods', 'name', 'mobile_number', 'date_joined', 'password_reset_token_created_at', 'last_login']
     list_filter = ['verified', 'is_staff', 'is_superuser', 'is_active']
 
     fieldsets = (
         (None, {'fields': ('email',)}),
-        (_('Personal Info'), {'fields': ('name', 'photo', 'mobile_number', 'favorite_restaurants', 'favorite_foods')}),
+        (_('Personal Info'), {'fields': ('name', 'mobile_number', 'favorite_restaurants', 'favorite_foods')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'verified', 'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('date_joined',)}),
     )
@@ -25,7 +25,7 @@ class CustomUserAdmin(UserAdmin):
     def get_readonly_fields(self, request, obj=None):
         # Make specified fields read-only for all users
         if obj:
-            return self.readonly_fields + ['photo', 'mobile_number', 'favorite_restaurants', 'favorite_foods']
+            return self.readonly_fields + [ 'mobile_number', 'favorite_restaurants', 'favorite_foods']
         return self.readonly_fields
 
 
