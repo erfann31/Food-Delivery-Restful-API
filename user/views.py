@@ -47,8 +47,12 @@ def token_obtain_pair_view(request):
     user = authenticate(email=email, password=password)
 
     if user:
-        access_token = TokenRepository.generate_token_for_user(user)
-        return Response({'access_token': access_token})
+        if user.verified:
+            access_token = TokenRepository.generate_token_for_user(user)
+            return Response({'access_token': access_token})
+        else:
+            return Response({"message": "User is not verified!"}, status=status.HTTP_401_UNAUTHORIZED)
+
     else:
         return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
