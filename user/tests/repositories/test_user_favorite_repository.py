@@ -17,7 +17,7 @@ class UserFavoriteRepositoryTestCase(TestCase):
         }
         self.user = CustomUser.objects.create_user(**self.user_data)
         self.restaurant = Restaurant.objects.create(name='Test Restaurant')
-        self.food = Food.objects.create(name='Test Food', price=10.99, category='Other', restaurant=self.restaurant)
+        self.food = Food.objects.create(name='Test Food', price=10.99, category='Other', restaurant=self.restaurant, min_time_to_delivery=15, max_time_to_delivery=30)
 
     def test_add_favorite_restaurant(self):
         with patch.object(CustomUser.objects, 'filter') as mock_filter:
