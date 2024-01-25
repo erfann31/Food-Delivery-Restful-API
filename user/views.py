@@ -36,10 +36,11 @@ from .utils.email_sender import send_verification_email, send_password_reset_ema
         401: openapi.Response(description='Invalid credentials', schema=openapi.Schema(type=openapi.TYPE_OBJECT, properties={'message': openapi.Schema(type=openapi.TYPE_STRING)})),
     },
 )
+
 @api_view(['POST'])
 @authentication_classes([])
 @permission_classes([])
-def token_obtain_pair_view(request):
+def login_view(request):
     email = request.data.get('email')
     password = request.data.get('password')
     if not email or not password:
@@ -49,7 +50,12 @@ def token_obtain_pair_view(request):
     if user:
         if user.verified:
             access_token = TokenRepository.generate_token_for_user(user)
-            return Response({'access_token': access_token})
+            serializer = CustomUserSerializer(user)
+            user_data = serializer.data
+
+            user_data['access_token'] = access_token
+
+            return Response(user_data)
         else:
             return Response({"message": "User is not verified!"}, status=status.HTTP_401_UNAUTHORIZED)
 

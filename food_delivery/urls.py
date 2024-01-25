@@ -26,7 +26,7 @@ urlpatterns = [
                   path('verify/<str:token>/', user_views.email_verification_view, name='email-verification'),
                   path('password-reset/<str:token>/', user_views.password_reset_confirm, name='password-reset-confirm'),
                   path('api-token-auth/', views.obtain_auth_token),
-                  path('api/token/', user_views.token_obtain_pair_view, name='token_obtain_pair'),
+                  path('api/token/', user_views.login_view, name='token_obtain_pair'),
                   path('api-auth/', include('rest_framework.urls')),
                   path('admin/', admin.site.urls),
                   path('api/v1/users/', include('user.urls')),
