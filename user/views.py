@@ -63,6 +63,22 @@ def login_view(request):
         return Response({"message": "Invalid credentials"}, status=status.HTTP_404_NOT_FOUND)
 
 
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def get_information(request):
+    user = request.user
+
+    if not user:
+        return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Serialize user data
+    serializer = CustomUserSerializer(user)
+    user_data = serializer.data
+
+    return Response(user_data, status=status.HTTP_200_OK)
+
+
 @swagger_auto_schema(
     method='post',
     request_body=openapi.Schema(
