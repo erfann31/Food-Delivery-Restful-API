@@ -31,7 +31,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(_('Name'), max_length=255)
     email = models.EmailField(_('Email'), unique=True)
     password = models.CharField(_('Password'), max_length=128)
-    photo = models.ImageField(_('Photo'), upload_to='user_photos/', blank=True, null=True)
+    photo = models.TextField(blank=True,  null=True)
     mobile_number = models.CharField(_('Mobile Number'), max_length=15, blank=True)
     verified = models.BooleanField(_('Verified'), default=False)
     verification_token = models.CharField(_('Verification Token'), max_length=100, blank=True)
