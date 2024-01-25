@@ -54,7 +54,7 @@ def token_obtain_pair_view(request):
             return Response({"message": "User is not verified!"}, status=status.HTTP_401_UNAUTHORIZED)
 
     else:
-        return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({"message": "Invalid credentials"}, status=status.HTTP_404_NOT_FOUND)
 
 
 @swagger_auto_schema(
