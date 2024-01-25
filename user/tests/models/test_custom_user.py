@@ -17,7 +17,7 @@ class CustomUserModelTestCase(TestCase):
             'password': 'password123'
         }
         self.restaurant = Restaurant.objects.create(name='Test Restaurant')
-        self.food = Food.objects.create(name='Test Food', price=10.99, category='Other', restaurant=self.restaurant)
+        self.food = Food.objects.create(name='Test Food', price=10.99, category='Other', restaurant=self.restaurant, min_time_to_delivery=15, max_time_to_delivery=30)
 
     def test_create_user(self):
         with patch.object(CustomUser.objects, 'create_user') as mock_create_user:
