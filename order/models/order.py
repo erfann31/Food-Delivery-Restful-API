@@ -4,6 +4,7 @@ from address.models.address import Address
 from consts.constants import STATUS_CHOICES, ONGOING, ESTIMATED_ARRIVAL_CHOICES
 from discount_code.models.discount_code import DiscountCode
 from order.utils.save_order_utility import generate_random_estimated_arrival
+from restaurant.models.restaurant import Restaurant
 from user.models import CustomUser
 
 
@@ -16,6 +17,7 @@ class Order(models.Model):
     discount_code = models.ForeignKey(DiscountCode, on_delete=models.SET_NULL, null=True, blank=True)
     estimated_arrival = models.IntegerField(choices=ESTIMATED_ARRIVAL_CHOICES)
     is_canceled = models.BooleanField(default=False)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='orders')
 
     def save(self, *args, **kwargs):
         if not self.estimated_arrival:
