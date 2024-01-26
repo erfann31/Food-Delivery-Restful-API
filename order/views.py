@@ -39,23 +39,6 @@ def get_user_orders(request):
         'ongoing_orders': ongoing_orders_serializer.data
     })
 
-@api_view(['GET'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([IsAuthenticated])
-def update_order_status(request, order_id):
-    if OrderRepository.update_order_status(order_id, request.user, "Completed"):
-        return Response({'message': 'Order status updated to Completed'}, status=status.HTTP_200_OK)
-    return Response({'message': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
-
-
-@api_view(['GET'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([IsAuthenticated])
-def cancel_order(request, order_id):
-    if OrderRepository.cancel_order(order_id, request.user):
-        return Response({'message': 'Order cancelled successfully!'}, status=status.HTTP_200_OK)
-    return Response({'message': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
-
 
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
