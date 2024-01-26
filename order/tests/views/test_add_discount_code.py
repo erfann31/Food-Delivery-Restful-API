@@ -10,6 +10,7 @@ from address.models.address import Address
 from discount_code.models.discount_code import DiscountCode
 from order.models.order import Order
 from order.views import add_discount_code
+from restaurant.models.restaurant import Restaurant
 
 User = get_user_model()
 
@@ -19,8 +20,9 @@ class TestAddDiscountCodeAPIView(TestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
         self.user = User.objects.create(email='test@example.com')
+        self.restaurant = Restaurant.objects.create(name='Test Restaurant')
         self.address = Address.objects.create(street_address='123 Test St', city='Test City', state='Test State', zipcode='12345', user=self.user)
-        self.order = Order.objects.create(user=self.user, total_price=50.0, status='Ongoing', delivery_address_id=self.address.id)
+        self.order = Order.objects.create(user=self.user, total_price=50.0, status='Ongoing', delivery_address_id=self.address.id, restaurant=self.restaurant)
         self.order_id = self.order.id
 
         self.endpoint = f'/add_discount_code/{self.order_id}/'

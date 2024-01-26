@@ -26,7 +26,8 @@ class OrderModelTestCase(TestCase):
             status=ONGOING,
             delivery_address=self.address,
             estimated_arrival=30,
-            is_canceled=False
+            is_canceled=False,
+            restaurant=self.restaurant
         )
 
         self.assertEqual(order.total_price, 50.00)
@@ -57,7 +58,8 @@ class OrderModelTestCase(TestCase):
                 total_price=50.00,
                 status=ONGOING,
                 delivery_address=self.address,
-                is_canceled=False
+                is_canceled=False,
+                restaurant=self.restaurant
             )
             order.save()
             lower_bound = 20.0

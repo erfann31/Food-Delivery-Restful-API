@@ -5,6 +5,7 @@ from address.models.address import Address
 from address.serializers.address_serializer import AddressSerializer
 from order.models.order import Order
 from order.serializers.order_serializer import OrderSerializer
+from restaurant.models.restaurant import Restaurant
 
 User = get_user_model()
 
@@ -45,8 +46,9 @@ class OrderSerializerToRepresentationMethodTestCase(TestCase):
 
     def test_to_representation_method(self):
         user = User.objects.create(email='test@example.com')
+        self.restaurant = Restaurant.objects.create(name='Test Restaurant')
         address = Address.objects.create(street_address='123 Test St', city='Test City', state='Test State', zipcode='12345', user=user)
-        order = Order.objects.create(user=user, total_price=50.11, status='Ongoing', delivery_address_id=address.id)
+        order = Order.objects.create(user=user, total_price=50.11, status='Ongoing', delivery_address_id=address.id, restaurant=self.restaurant)
         serializer = OrderSerializer()
 
         representation = serializer.to_representation(order)
