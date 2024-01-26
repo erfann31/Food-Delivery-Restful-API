@@ -7,23 +7,28 @@ from discount_code.serializers.discount_code_serializer import DiscountCodeSeria
 from order.models.order import Order
 from order.models.order_item import OrderItem
 from order.serializers.order_item_serializer import OrderItemSerializer
+from restaurant.serializers.restaurant_serializer import RestaurantSerializer
 
 
 class OrderSerializer(serializers.ModelSerializer):
     delivery_address = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all())
     orderItems = OrderItemSerializer(many=True, required=True, source='orderitem_set')
     discount_code = serializers.PrimaryKeyRelatedField(queryset=DiscountCode.objects.all(), required=False)
+    restaurant = RestaurantSerializer(required=False)
 
     class Meta:
         model = Order
-        fields = ['id', 'total_price', 'discount_code', 'status', 'date_and_time', 'delivery_address', 'estimated_arrival', 'is_canceled', 'orderItems']
-        read_only_fields = ['id', 'date_and_time', 'orderItems', 'estimated_arrival', 'total_price']
+        fields = ['id', 'total_price', 'discount_code', 'status', 'date_and_time', 'delivery_address', 'estimated_arrival', 'is_canceled', 'orderItems', 'restaurant']
+        read_only_fields = ['id', 'date_and_time', 'orderItems', 'estimated_arrival', 'total_price', 'restaurant']
+
 
     def create(self, validated_data):
         discount_code = validated_data.pop('discount_code', None)
         order_items_data = validated_data.pop('orderitem_set')
 
-        order = Order.objects.create(**validated_data)
+        restaurant = order_items_data[0]['food'].restaurant if order_items_data else None
+
+        order = Order.objects.create(restaurant=restaurant, **validated_data)
 
         total_price = 0
 
